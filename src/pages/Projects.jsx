@@ -400,16 +400,6 @@ function AlarmViz() {
       <text x="120" y="108" textAnchor="middle" fontSize="5.5"
         fill="#C9913A" opacity="0.5" fontFamily="monospace">328P</text>
 
-      {/* OLED — top-centre, above ATmega */}
-      <rect x="96" y="8" width="48" height="14" fill="#0C1220"
-        stroke="#C9913A" strokeWidth="0.7" strokeOpacity="0.45" rx="1" />
-      {[0,1,2,3,4,5].map(i => (
-        <circle key={`op${i}`}
-          cx={100+i*7} cy="15" r="2" fill="none"
-          stroke="#C9913A" strokeOpacity="0.4" strokeWidth="0.6"/>
-      ))}
-      <text x="120" y="7" textAnchor="middle" fontSize="3"
-        fill="#C9913A" opacity="0.35" fontFamily="monospace">OLED</text>
 
       {/* MOSFET — right side, mid-height */}
       <rect x="196" y="72" width="22" height="30" fill="#0C1220"
@@ -480,11 +470,6 @@ function AlarmViz() {
         strokeDasharray="200" strokeDashoffset="200"
         style={{animation:'alarmTraceDraw 0.6s ease-out 0.5s forwards'}} />
 
-      {/* T_OLED: OLED → ATmega top (I2C) */}
-      <path id="tOled" d="M 120,22 V 72"
-        fill="none" stroke="#C9913A" strokeWidth="1" strokeOpacity="0.45" strokeLinecap="round"
-        strokeDasharray="100" strokeDashoffset="100"
-        style={{animation:'alarmTraceDraw 0.4s ease-out 0.75s forwards'}} />
 
       {/* T_MOSFET: ATmega right → MOSFET (PWM) */}
       <path id="tMosfet" d="M 162,83 H 196"
@@ -616,11 +601,6 @@ function AlarmViz() {
         <animate attributeName="opacity" values="0;0.9;0.9;0" keyTimes="0;0.1;0.85;1" dur="1.6s" begin="2.5s" repeatCount="indefinite"/>
       </circle>
 
-      {/* OLED → ATmega (I2C) */}
-      <circle r="1.8" fill="#C9913A" opacity="0">
-        <animateMotion dur="1.3s" begin="3s" repeatCount="indefinite"><mpath href="#tOled"/></animateMotion>
-        <animate attributeName="opacity" values="0;0.9;0.9;0" keyTimes="0;0.1;0.85;1" dur="1.3s" begin="3s" repeatCount="indefinite"/>
-      </circle>
 
       {/* ATmega → MOSFET (PWM) */}
       <circle r="1.8" fill="#C9913A" opacity="0">
