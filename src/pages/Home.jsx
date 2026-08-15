@@ -119,7 +119,7 @@ const featuredProjects = [
     subtitle: 'Real-Time Fleet Tracking Platform',
     description:
       'Architected full-stack fleet management system from telemetry data flow through embedded vehicular units up to real-time React web dashboards and REST APIs.',
-    tags: ['React.js', 'Python', 'REST APIs', 'ESP Microcontrollers'],
+    tags: ['React.js', 'Python', 'REST APIs', 'Figma', 'Technical Research'],
     type: 'Petesso GmbH',
   },
 ]
