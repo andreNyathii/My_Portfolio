@@ -510,6 +510,33 @@ function AlarmViz() {
         strokeDasharray="100" strokeDashoffset="100"
         style={{animation:'alarmTraceDraw 0.4s ease-out 1.3s forwards'}} />
 
+      {/* J_OLED: 4-pin vertical jumper header — open space, left side above buttons */}
+      {/* Pins: VCC · GND · SCL · SDA — standard I2C OLED connector pinout */}
+      {/* Each pin is a small open square (schematic jumper symbol) stacked vertically */}
+      {['VCC','GND','SCL','SDA'].map((label, i) => (
+        <g key={`jop${i}`}>
+          {/* Jumper pin body — hollow square */}
+          <rect x="10" y={93 + i * 11} width="9" height="9" fill="#0C1220"
+            stroke="#C9913A" strokeOpacity="0.55" strokeWidth="0.75" />
+          {/* Short nub on the right side — the wire exit point */}
+          <line x1="19" y1={97 + i * 11} x2="23" y2={97 + i * 11}
+            stroke="#C9913A" strokeOpacity="0.45" strokeWidth="0.7" />
+          {/* Pin label to the left */}
+          <text x="8" y={99 + i * 11} textAnchor="end" fontSize="2.8"
+            fill="#C9913A" opacity="0.35" fontFamily="monospace">{label}</text>
+        </g>
+      ))}
+      {/* Connector label above the header */}
+      <text x="14" y="90" textAnchor="middle" fontSize="2.8"
+        fill="#C9913A" opacity="0.3" fontFamily="monospace">J_OLED</text>
+
+      {/* T_OLED_J: OLED jumper → ATmega left pins (I2C SDA/SCL) */}
+      {/* Runs right from the jumper nubs, then up along x=60 to ATmega left side */}
+      <path id="tOledJ" d="M 23,97 H 60 V 107 H 78"
+        fill="none" stroke="#C9913A" strokeWidth="0.9" strokeOpacity="0.4" strokeLinecap="round"
+        strokeDasharray="150" strokeDashoffset="150"
+        style={{animation:'alarmTraceDraw 0.5s ease-out 1.45s forwards'}} />
+
       {/* T_BTNS: Buttons → ATmega bottom-left (GPIO) */}
       <path id="tBtns" d="M 38,138 V 132 H 78 V 128"
         fill="none" stroke="#C9913A" strokeWidth="0.9" strokeOpacity="0.35" strokeLinecap="round"
@@ -567,6 +594,12 @@ function AlarmViz() {
       <circle r="1.8" fill="#F5F0E8" opacity="0">
         <animateMotion dur="2s" begin="4.5s" repeatCount="indefinite"><mpath href="#tBtns"/></animateMotion>
         <animate attributeName="opacity" values="0;0.7;0.7;0" keyTimes="0;0.1;0.85;1" dur="2s" begin="4.5s" repeatCount="indefinite"/>
+      </circle>
+
+      {/* OLED jumper → ATmega (I2C data — same cadence as tOled above) */}
+      <circle r="1.8" fill="#C9913A" opacity="0">
+        <animateMotion dur="1.3s" begin="3.2s" repeatCount="indefinite"><mpath href="#tOledJ"/></animateMotion>
+        <animate attributeName="opacity" values="0;0.9;0.9;0" keyTimes="0;0.1;0.85;1" dur="1.3s" begin="3.2s" repeatCount="indefinite"/>
       </circle>
 
       {/* ATmega heartbeat glow */}
