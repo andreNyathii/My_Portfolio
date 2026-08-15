@@ -183,101 +183,6 @@ function ScheduleViz() {
   )
 }
 
-// --- EcoNode Telemetry: Live telemetry trace + PCB silhouettes ---
-// A sine wave being "drawn" from left to right, with small component
-// silhouettes (capacitor, IC) framing the edges. Represents the bridge
-// between hardware sensing and software visualisation.
-function EcoNodeViz() {
-  // Pre-compute sine wave points for the SVG path
-  const points = []
-  for (let x = 0; x <= 200; x += 4) {
-    const y = 80 + Math.sin((x / 200) * Math.PI * 4) * 25
-    points.push(`${x + 20},${y}`)
-  }
-  const pathD = `M ${points.join(' L ')}`
-
-  return (
-    <svg viewBox="0 0 240 160" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-      <style>{`
-        @keyframes drawLine {
-          to { stroke-dashoffset: 0; }
-        }
-        @keyframes fadeIn {
-          to { opacity: 1; }
-        }
-        @keyframes blink {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0; }
-        }
-      `}</style>
-
-      {/* Grid background — represents a scope/dashboard */}
-      {[0,1,2,3].map(i => (
-        <line key={`gh${i}`} x1="20" y1={40 + i * 25} x2="220" y2={40 + i * 25}
-          stroke="#F5F0E8" strokeOpacity="0.04" strokeWidth="0.5" />
-      ))}
-      {[0,1,2,3,4].map(i => (
-        <line key={`gv${i}`} x1={20 + i * 50} y1="30" x2={20 + i * 50} y2="140"
-          stroke="#F5F0E8" strokeOpacity="0.04" strokeWidth="0.5" />
-      ))}
-
-      {/* Axis labels */}
-      <text x="18" y="28" fontSize="5" fill="#C9913A" opacity="0.4" fontFamily="monospace">°C</text>
-      <text x="200" y="148" fontSize="5" fill="#C9913A" opacity="0.4" fontFamily="monospace">t(s)</text>
-
-      {/* The animated telemetry wave */}
-      {/* stroke-dasharray = total path length approximation, animates to 0 offset = "draws" the line */}
-      <path
-        d={pathD}
-        fill="none"
-        stroke="#C9913A"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeDasharray="1000"
-        strokeDashoffset="1000"
-        style={{ animation: 'drawLine 2.5s ease-in-out forwards' }}
-      />
-
-      {/* Secondary faint trace — represents a second sensor channel */}
-      <path
-        d={`M 20,90 ${points.map((p, i) => {
-          const [x, y] = p.split(',')
-          return `L ${x},${parseFloat(y) + 15}`
-        }).join(' ')}`}
-        fill="none"
-        stroke="#F5F0E8"
-        strokeWidth="0.5"
-        strokeOpacity="0.1"
-        strokeDasharray="1000"
-        strokeDashoffset="1000"
-        style={{ animation: 'drawLine 3s ease-in-out 0.5s forwards' }}
-      />
-
-      {/* Live indicator dot at the end of the trace */}
-      <circle cx="220" cy="80" r="3" fill="#C9913A" opacity="0">
-        <animate attributeName="opacity" values="0;1" dur="0.3s" begin="2.2s" fill="freeze" />
-        <animate attributeName="r" values="3;5;3" dur="1.5s" begin="2.5s" repeatCount="indefinite" />
-      </circle>
-
-      {/* ESP32 chip silhouette — top left corner */}
-      <rect x="6" y="6" width="18" height="14" fill="none" stroke="#C9913A" strokeOpacity="0.2" strokeWidth="0.8" rx="1" />
-      {[0,1,2].map(i => (
-        <line key={`p${i}`} x1="4" y1={9 + i * 3} x2="6" y2={9 + i * 3} stroke="#C9913A" strokeOpacity="0.2" strokeWidth="0.8" />
-      ))}
-      {[0,1,2].map(i => (
-        <line key={`p2${i}`} x1="24" y1={9 + i * 3} x2="26" y2={9 + i * 3} stroke="#C9913A" strokeOpacity="0.2" strokeWidth="0.8" />
-      ))}
-      <text x="15" y="15" textAnchor="middle" fontSize="4" fill="#C9913A" opacity="0.3" fontFamily="monospace">MCU</text>
-
-      {/* MQTT status label */}
-      <text x="220" y="20" textAnchor="end" fontSize="5" fill="#C9913A" opacity="0.4" fontFamily="monospace">MQTT</text>
-      <text x="220" y="27" textAnchor="end" fontSize="5" fill="#C9913A" opacity="0.6" fontFamily="monospace">
-        LIVE
-        <animate attributeName="opacity" values="0.6;0.1;0.6" dur="1.2s" repeatCount="indefinite" />
-      </text>
-    </svg>
-  )
-}
 
 // --- Accessible Alarm: KiCad-inspired PCB layout ---
 // Inspired by the actual KiCad PCB for this project.
@@ -916,24 +821,6 @@ const projectsData = [
     ],
     // Reference to the SVG component function — called below in JSX
     Viz: ScheduleViz,
-  },
-  {
-    title: 'EcoNode Telemetry',
-    subtitle: 'End-to-End IoT Data Logger',
-    type: 'Full-Stack & Hardware (Concept)',
-    description:
-      'Architected a complete industrial data logging pipeline bridging custom hardware and web infrastructure. Designed an ESP32-based PCB in KiCad for sensor integration and reliable data sampling. Built a C# ASP.NET Core backend to ingest real-time MQTT telemetry, exposing a secure REST API for a React/Tailwind frontend dashboard that visualises equipment health.',
-    tech: [
-      { name: 'React',   url: icons.react },
-      { name: 'Tailwind',url: icons.tailwind },
-      { name: 'C#',      url: icons.csharp },
-      { name: '.NET',    url: icons.dotnet },
-      { name: 'C++',     url: icons.cplusplus },
-      { name: 'KiCad',   url: icons.kicad },
-      { name: 'Arduino', url: icons.arduino },     // ESP32 via Arduino framework
-      { name: 'Git',     url: icons.git },
-    ],
-    Viz: EcoNodeViz,
   },
   {
     title: 'Accessible Alarm System',
