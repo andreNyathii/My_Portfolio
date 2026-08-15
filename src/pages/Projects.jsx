@@ -282,401 +282,454 @@ function EcoNodeViz() {
 // --- Accessible Alarm: KiCad-inspired PCB layout ---
 // Inspired by the actual KiCad PCB for this project.
 // Uses a dark navy substrate, gold traces (our brand colour), and
-// cream/white component outlines. animateMotion drives signal dots
-// along each trace — each representing a live data bus (I2C, PWM, SPI).
+// AlarmViz — proper schematic layout.
+// Signal flow: CoinCell → RTC → WiFi/Network  →  ATmega  ← OLED (I2C)
+//                                                   ↑         ↑
+//                                               Buttons    Buzzer + MOSFET
+// All components sit in fixed schematic positions with connecting traces
+// drawn sequentially. Signal pulses then travel those traces indefinitely.
 function AlarmViz() {
   return (
     <svg viewBox="0 0 240 160" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
       <style>{`
-        @keyframes alarmTraceDraw {
-          to { stroke-dashoffset: 0; }
+        @keyframes alarmTraceDraw { to { stroke-dashoffset: 0; } }
+        @keyframes atmPulse {
+          0%, 100% { r: 5; opacity: 0.7; }
+          50%       { r: 11; opacity: 0.12; }
+        }
+        @keyframes netPulse {
+          0%, 100% { opacity: 0.2; }
+          50%       { opacity: 0.6; }
         }
       `}</style>
 
-      {/* PCB substrate — slightly blued dark, like the KiCad dark theme */}
-      <rect x="0" y="0" width="240" height="160" fill="#080D18" rx="3" opacity="0.85" />
-
-      {/* PCB dot matrix grid — matches KiCad's background dots */}
-      {Array.from({ length: 18 }, (_, r) =>
-        Array.from({ length: 28 }, (_, c) => (
-          <circle key={`pcbdot${r}${c}`}
-            cx={4 + c * 8.4} cy={4 + r * 8.7} r="0.35"
-            fill="#C9913A" opacity="0.07" />
-        ))
+      {/* ── SCHEMATIC BACKGROUND ── dark slate, no PCB dots here for clarity */}
+      <rect x="0" y="0" width="240" height="160" fill="#07080F" rx="2" />
+      {/* Very faint grid — schematic paper feel */}
+      {Array.from({length:9}, (_,r) =>
+        <line key={`sg${r}`} x1="0" y1={r*20} x2="240" y2={r*20}
+          stroke="#C9913A" strokeOpacity="0.04" strokeWidth="0.4"/>
+      )}
+      {Array.from({length:13}, (_,c) =>
+        <line key={`sc${c}`} x1={c*20} y1="0" x2={c*20} y2="160"
+          stroke="#C9913A" strokeOpacity="0.04" strokeWidth="0.4"/>
       )}
 
-      {/* Board edge — the PCB outline */}
-      <rect x="4" y="4" width="232" height="152" fill="none"
-        stroke="#C9913A" strokeWidth="1" strokeOpacity="0.35" rx="2" />
+      {/* ══════════════════════ COMPONENTS ══════════════════════ */}
 
-      {/* ======= COMPONENTS ======= */}
+      {/* ── TOP CHAIN (left → right): CoinCell → RTC → WiFi Module ── */}
 
-      {/* GND pour — large circular pad, top-left (inspired by the coin-cell/GND pad) */}
-      <circle cx="24" cy="24" r="13" fill="#C9913A" fillOpacity="0.04"
-        stroke="#C9913A" strokeWidth="0.8" strokeOpacity="0.45" />
-      <circle cx="24" cy="24" r="7" fill="none"
-        stroke="#C9913A" strokeWidth="0.6" strokeOpacity="0.3" />
-      <text x="24" y="27" textAnchor="middle" fontSize="4"
-        fill="#C9913A" opacity="0.55" fontFamily="monospace">GND</text>
+      {/* COIN CELL BATTERY — far left, schematic circle symbol */}
+      {/* In schematics a battery is two parallel lines (long = +, short = -) */}
+      <circle cx="18" cy="34" r="12" fill="none"
+        stroke="#C9913A" strokeWidth="0.9" strokeOpacity="0.55" />
+      {/* + plate */}
+      <line x1="14" y1="30" x2="22" y2="30"
+        stroke="#C9913A" strokeOpacity="0.7" strokeWidth="1.2" />
+      {/* − plate (shorter) */}
+      <line x1="16" y1="34" x2="20" y2="34"
+        stroke="#C9913A" strokeOpacity="0.5" strokeWidth="0.7" />
+      <text x="18" y="50" textAnchor="middle" fontSize="3.2"
+        fill="#C9913A" opacity="0.45" fontFamily="monospace">CR2032</text>
 
-      {/* DS3231 RTC — left side, small IC (like in your PCB) */}
-      <rect x="7" y="58" width="34" height="22" fill="#0C1220"
-        stroke="#C9913A" strokeWidth="0.8" strokeOpacity="0.5" rx="1" />
-      {[0,1,2,3].map(i => (
-        <g key={`rtcpin${i}`}>
-          <line x1="5" y1={62 + i*5} x2="7" y2={62 + i*5}
-            stroke="#C9913A" strokeOpacity="0.45" strokeWidth="0.9" />
-          <line x1="41" y1={62 + i*5} x2="43" y2={62 + i*5}
-            stroke="#C9913A" strokeOpacity="0.45" strokeWidth="0.9" />
-        </g>
-      ))}
-      <text x="24" y="69" textAnchor="middle" fontSize="3.8"
-        fill="#C9913A" opacity="0.55" fontFamily="monospace">DS3231</text>
-      <text x="24" y="75" textAnchor="middle" fontSize="3.2"
-        fill="#C9913A" opacity="0.35" fontFamily="monospace">RTC</text>
-
-      {/* OLED header — top-centre (pin strip like OLED_PINS in image) */}
-      <rect x="82" y="8" width="50" height="11" fill="#0C1220"
-        stroke="#C9913A" strokeWidth="0.7" strokeOpacity="0.4" rx="1" />
-      {[0,1,2,3,4,5].map(i => (
-        <circle key={`oledpin${i}`}
-          cx={86 + i * 8} cy="13" r="2.2" fill="none"
-          stroke="#C9913A" strokeOpacity="0.45" strokeWidth="0.6" />
-      ))}
-      <text x="107" y="7" textAnchor="middle" fontSize="3"
-        fill="#C9913A" opacity="0.35" fontFamily="monospace">OLED_PINS</text>
-
-      {/* AVR-ISP header — right of OLED (programming port) */}
-      <rect x="143" y="8" width="28" height="16" fill="#0C1220"
-        stroke="#C9913A" strokeWidth="0.7" strokeOpacity="0.35" rx="1" />
+      {/* DS3231 RTC — centre-left */}
+      <rect x="50" y="22" width="36" height="24" fill="#0C1220"
+        stroke="#C9913A" strokeWidth="0.85" strokeOpacity="0.6" rx="1" />
+      {/* RTC left pins */}
       {[0,1,2].map(i => (
-        <g key={`isp${i}`}>
-          <circle cx={148 + i*8} cy="13" r="2" fill="none"
-            stroke="#C9913A" strokeOpacity="0.35" strokeWidth="0.6" />
-          <circle cx={148 + i*8} cy="19" r="2" fill="none"
-            stroke="#C9913A" strokeOpacity="0.35" strokeWidth="0.6" />
-        </g>
+        <line key={`rl${i}`} x1="48" y1={27+i*6} x2="50" y2={27+i*6}
+          stroke="#C9913A" strokeOpacity="0.5" strokeWidth="0.8"/>
       ))}
-      <text x="157" y="7" textAnchor="middle" fontSize="2.8"
-        fill="#C9913A" opacity="0.3" fontFamily="monospace">AVR-ISP</text>
+      {/* RTC right pins */}
+      {[0,1,2].map(i => (
+        <line key={`rr${i}`} x1="86" y1={27+i*6} x2="88" y2={27+i*6}
+          stroke="#C9913A" strokeOpacity="0.5" strokeWidth="0.8"/>
+      ))}
+      <text x="68" y="33" textAnchor="middle" fontSize="4"
+        fill="#C9913A" opacity="0.65" fontFamily="monospace">DS3231</text>
+      <text x="68" y="40" textAnchor="middle" fontSize="3"
+        fill="#C9913A" opacity="0.4" fontFamily="monospace">RTC</text>
 
-      {/* ===== ATmega328P — CENTRAL IC (wide DIP package) ===== */}
-      {/* This is the dominant component, like in your image */}
-      <rect x="78" y="52" width="84" height="56" fill="#0C1220"
-        stroke="#C9913A" strokeWidth="1.1" strokeOpacity="0.75" rx="1.5" />
-      {/* Pin notch (IC orientation marker) */}
-      <path d="M 78,72 a 7,7 0 0,0 0,-12" fill="none"
+      {/* WiFi / Network module — top right of chain */}
+      {/* Schematic: two concentric arcs = antenna / wireless symbol */}
+      <rect x="115" y="18" width="34" height="28" fill="#0C1220"
+        stroke="#C9913A" strokeWidth="0.85" strokeOpacity="0.55" rx="1" />
+      {/* Antenna arcs */}
+      <path d="M 126,38 a 6,6 0 0,1 10,0" fill="none"
+        stroke="#C9913A" strokeWidth="0.9" strokeOpacity="0.5"
+        style={{animation:'netPulse 2s ease-in-out infinite'}} />
+      <path d="M 122,42 a 10,10 0 0,1 18,0" fill="none"
+        stroke="#C9913A" strokeWidth="0.7" strokeOpacity="0.35"
+        style={{animation:'netPulse 2s ease-in-out 0.4s infinite'}} />
+      <path d="M 118,46 a 14,14 0 0,1 26,0" fill="none"
+        stroke="#C9913A" strokeWidth="0.5" strokeOpacity="0.2"
+        style={{animation:'netPulse 2s ease-in-out 0.8s infinite'}} />
+      {/* Left pin */}
+      <line x1="113" y1="32" x2="115" y2="32"
+        stroke="#C9913A" strokeOpacity="0.5" strokeWidth="0.8"/>
+      <text x="132" y="25" textAnchor="middle" fontSize="3.2"
+        fill="#C9913A" opacity="0.45" fontFamily="monospace">WiFi</text>
+
+      {/* ══ ATmega328P — CENTRE, dominant IC ══ */}
+      {/* Wide DIP package, centred horizontally, middle-lower */}
+      <rect x="82" y="72" width="76" height="56" fill="#0C1220"
+        stroke="#C9913A" strokeWidth="1.2" strokeOpacity="0.8" rx="1.5" />
+      {/* Orientation notch */}
+      <path d="M 82,90 a 6,6 0 0,0 0,-10" fill="none"
         stroke="#C9913A" strokeWidth="0.7" strokeOpacity="0.5" />
-      {/* Left pins — 7 per side */}
-      {[0,1,2,3,4,5,6].map(i => (
-        <g key={`atml${i}`}>
-          <rect x="69" y={56 + i*7} width="5" height="4" fill="none"
-            stroke="#C9913A" strokeOpacity="0.35" strokeWidth="0.5" />
-          <line x1="74" y1={58 + i*7} x2="78" y2={58 + i*7}
-            stroke="#C9913A" strokeOpacity="0.55" strokeWidth="0.9" />
+      {/* Left pins — 6 */}
+      {[0,1,2,3,4,5].map(i => (
+        <g key={`al${i}`}>
+          <rect x="73" y={77+i*8} width="5" height="4" fill="none"
+            stroke="#C9913A" strokeOpacity="0.3" strokeWidth="0.5"/>
+          <line x1="78" y1={79+i*8} x2="82" y2={79+i*8}
+            stroke="#C9913A" strokeOpacity="0.55" strokeWidth="0.9"/>
         </g>
       ))}
-      {/* Right pins */}
-      {[0,1,2,3,4,5,6].map(i => (
-        <g key={`atmr${i}`}>
-          <rect x="162" y={56 + i*7} width="5" height="4" fill="none"
-            stroke="#C9913A" strokeOpacity="0.35" strokeWidth="0.5" />
-          <line x1="162" y1={58 + i*7} x2="166" y2={58 + i*7}
-            stroke="#C9913A" strokeOpacity="0.55" strokeWidth="0.9" />
+      {/* Right pins — 6 */}
+      {[0,1,2,3,4,5].map(i => (
+        <g key={`ar${i}`}>
+          <rect x="158" y={77+i*8} width="5" height="4" fill="none"
+            stroke="#C9913A" strokeOpacity="0.3" strokeWidth="0.5"/>
+          <line x1="158" y1={79+i*8} x2="162" y2={79+i*8}
+            stroke="#C9913A" strokeOpacity="0.55" strokeWidth="0.9"/>
         </g>
       ))}
-      <text x="120" y="77" textAnchor="middle" fontSize="6"
-        fill="#C9913A" opacity="0.75" fontFamily="monospace">ATmega</text>
-      <text x="120" y="86" textAnchor="middle" fontSize="5"
+      <text x="120" y="98" textAnchor="middle" fontSize="7"
+        fill="#C9913A" opacity="0.8" fontFamily="monospace">ATmega</text>
+      <text x="120" y="108" textAnchor="middle" fontSize="5.5"
         fill="#C9913A" opacity="0.5" fontFamily="monospace">328P</text>
 
-      {/* Crystal — oval, below ATmega centre (like Y1 in image) */}
-      <ellipse cx="120" cy="122" rx="12" ry="7" fill="#0C1220"
-        stroke="#C9913A" strokeWidth="0.8" strokeOpacity="0.45" />
-      <line x1="108" y1="122" x2="103" y2="122"
-        stroke="#C9913A" strokeOpacity="0.35" strokeWidth="0.8" />
-      <line x1="132" y1="122" x2="137" y2="122"
-        stroke="#C9913A" strokeOpacity="0.35" strokeWidth="0.8" />
-      <text x="120" y="125" textAnchor="middle" fontSize="3.5"
-        fill="#C9913A" opacity="0.45" fontFamily="monospace">XTAL</text>
-
-      {/* MOSFET — top right (like AO3400A in image) */}
-      <rect x="192" y="20" width="20" height="28" fill="#0C1220"
+      {/* OLED — top-centre, above ATmega */}
+      <rect x="96" y="8" width="48" height="14" fill="#0C1220"
         stroke="#C9913A" strokeWidth="0.7" strokeOpacity="0.45" rx="1" />
-      <line x1="212" y1="26" x2="217" y2="26"
-        stroke="#C9913A" strokeOpacity="0.4" strokeWidth="0.8" />
-      <line x1="212" y1="32" x2="217" y2="32"
-        stroke="#C9913A" strokeOpacity="0.4" strokeWidth="0.8" />
-      <line x1="212" y1="38" x2="217" y2="38"
-        stroke="#C9913A" strokeOpacity="0.4" strokeWidth="0.8" />
-      <text x="202" y="36" textAnchor="middle" fontSize="3.5"
-        fill="#C9913A" opacity="0.4" fontFamily="monospace">NMOS</text>
+      {[0,1,2,3,4,5].map(i => (
+        <circle key={`op${i}`}
+          cx={100+i*7} cy="15" r="2" fill="none"
+          stroke="#C9913A" strokeOpacity="0.4" strokeWidth="0.6"/>
+      ))}
+      <text x="120" y="7" textAnchor="middle" fontSize="3"
+        fill="#C9913A" opacity="0.35" fontFamily="monospace">OLED</text>
 
-      {/* Buzzer — circular component, right side (like BZ1) */}
-      <circle cx="208" cy="100" r="16" fill="#0C1220"
+      {/* MOSFET — right side, mid-height */}
+      <rect x="196" y="72" width="22" height="30" fill="#0C1220"
+        stroke="#C9913A" strokeWidth="0.75" strokeOpacity="0.5" rx="1" />
+      {/* 3 pins right */}
+      {[0,1,2].map(i => (
+        <line key={`mfp${i}`} x1="218" y1={78+i*8} x2="222" y2={78+i*8}
+          stroke="#C9913A" strokeOpacity="0.4" strokeWidth="0.8"/>
+      ))}
+      <text x="207" y="91" textAnchor="middle" fontSize="3.5"
+        fill="#C9913A" opacity="0.45" fontFamily="monospace">NMOS</text>
+
+      {/* BUZZER — bottom right, circular */}
+      <circle cx="212" cy="137" r="14" fill="#0C1220"
         stroke="#C9913A" strokeWidth="0.8" strokeOpacity="0.45" />
-      <circle cx="208" cy="100" r="9" fill="none"
-        stroke="#C9913A" strokeWidth="0.5" strokeOpacity="0.3" />
-      <text x="208" y="103" textAnchor="middle" fontSize="4"
+      <circle cx="212" cy="137" r="7" fill="none"
+        stroke="#C9913A" strokeWidth="0.5" strokeOpacity="0.28" />
+      <text x="212" y="140" textAnchor="middle" fontSize="4"
         fill="#C9913A" opacity="0.5" fontFamily="monospace">BZ1</text>
 
-      {/* Button row — bottom (BTN_RST / UP / DN / SEL) */}
-      {['RST','UP','DN','SEL'].map((label, i) => (
+      {/* XTAL — bottom centre */}
+      <ellipse cx="120" cy="148" rx="11" ry="6" fill="#0C1220"
+        stroke="#C9913A" strokeWidth="0.8" strokeOpacity="0.45" />
+      <line x1="109" y1="148" x2="105" y2="148"
+        stroke="#C9913A" strokeOpacity="0.35" strokeWidth="0.8"/>
+      <line x1="131" y1="148" x2="135" y2="148"
+        stroke="#C9913A" strokeOpacity="0.35" strokeWidth="0.8"/>
+      <text x="120" y="151" textAnchor="middle" fontSize="3.2"
+        fill="#C9913A" opacity="0.4" fontFamily="monospace">XTAL</text>
+
+      {/* BUTTONS — bottom left row */}
+      {['RST','UP','DN'].map((label, i) => (
         <g key={`btn${i}`}>
-          <rect x={22 + i * 26} y={136} width="18" height="16" fill="#0C1220"
-            stroke="#C9913A" strokeWidth="0.6" strokeOpacity="0.35" rx="1" />
-          <circle cx={31 + i * 26} cy={144} r="4.5" fill="none"
-            stroke="#C9913A" strokeOpacity="0.35" strokeWidth="0.5" />
-          <text x={31 + i * 26} y={134} textAnchor="middle" fontSize="2.8"
+          <rect x={8+i*22} y={138} width="16" height="14" fill="#0C1220"
+            stroke="#C9913A" strokeWidth="0.55" strokeOpacity="0.35" rx="1"/>
+          <circle cx={16+i*22} cy={145} r="4" fill="none"
+            stroke="#C9913A" strokeOpacity="0.3" strokeWidth="0.5"/>
+          <text x={16+i*22} y={136} textAnchor="middle" fontSize="2.8"
             fill="#C9913A" opacity="0.35" fontFamily="monospace">{label}</text>
         </g>
       ))}
 
-      {/* USB-C — bottom left */}
-      <rect x="7" y="136" width="16" height="16" fill="#0C1220"
-        stroke="#C9913A" strokeWidth="0.6" strokeOpacity="0.35" rx="3" />
-      <text x="15" y="147" textAnchor="middle" fontSize="3"
-        fill="#C9913A" opacity="0.3" fontFamily="monospace">USB-C</text>
+      {/* ══════════════════════ TRACES ══════════════════════ */}
+      {/* Every trace is given a unique id for animateMotion signal pulses. */}
+      {/* strokeDasharray/Offset + CSS animation = "draw-on" effect at load. */}
 
-      {/* ======= TRACES (drawn on load, then signal pulses run forever) ======= */}
+      {/* T_BATT: CoinCell → RTC (Vbat power rail) */}
+      <path id="tBatt" d="M 30,34 H 50"
+        fill="none" stroke="#C9913A" strokeWidth="1" strokeOpacity="0.5" strokeLinecap="round"
+        strokeDasharray="100" strokeDashoffset="100"
+        style={{animation:'alarmTraceDraw 0.4s ease-out 0.1s forwards'}} />
 
-      {/* T1: OLED → ATmega  (I2C data bus) */}
-      <path id="at1" d="M 107,19 V 38 H 95 V 52"
-        fill="none" stroke="#C9913A" strokeWidth="1.1" strokeOpacity="0.45" strokeLinecap="round"
-        strokeDasharray="300" strokeDashoffset="300"
-        style={{ animation: 'alarmTraceDraw 0.7s ease-out 0.2s forwards' }} />
+      {/* T_RTC_NET: RTC → WiFi module (I2C / data bus) */}
+      <path id="tRtcNet" d="M 86,32 H 115"
+        fill="none" stroke="#C9913A" strokeWidth="1" strokeOpacity="0.5" strokeLinecap="round"
+        strokeDasharray="100" strokeDashoffset="100"
+        style={{animation:'alarmTraceDraw 0.4s ease-out 0.35s forwards'}} />
 
-      {/* T2: DS3231 RTC → ATmega  (I2C) */}
-      <path id="at2" d="M 41,65 H 60 V 70 H 78"
-        fill="none" stroke="#C9913A" strokeWidth="1.1" strokeOpacity="0.45" strokeLinecap="round"
-        strokeDasharray="300" strokeDashoffset="300"
-        style={{ animation: 'alarmTraceDraw 0.7s ease-out 0.45s forwards' }} />
+      {/* T_NET_MCU: WiFi → ATmega (SPI / UART) — drops from top-right of WiFi to ATmega right-side pin */}
+      <path id="tNetMcu" d="M 149,32 H 170 V 79 H 162"
+        fill="none" stroke="#C9913A" strokeWidth="1" strokeOpacity="0.45" strokeLinecap="round"
+        strokeDasharray="200" strokeDashoffset="200"
+        style={{animation:'alarmTraceDraw 0.6s ease-out 0.6s forwards'}} />
 
-      {/* T3: ATmega → MOSFET  (PWM gate drive) */}
-      <path id="at3" d="M 162,60 H 176 V 34 H 192"
-        fill="none" stroke="#C9913A" strokeWidth="1.1" strokeOpacity="0.45" strokeLinecap="round"
-        strokeDasharray="300" strokeDashoffset="300"
-        style={{ animation: 'alarmTraceDraw 0.7s ease-out 0.7s forwards' }} />
-
-      {/* T4: ATmega → Buzzer  (PWM audio) */}
-      <path id="at4" d="M 162,76 H 178 V 100 H 192"
-        fill="none" stroke="#C9913A" strokeWidth="1.1" strokeOpacity="0.45" strokeLinecap="round"
-        strokeDasharray="300" strokeDashoffset="300"
-        style={{ animation: 'alarmTraceDraw 0.7s ease-out 0.95s forwards' }} />
-
-      {/* T5a: ATmega → Crystal (left pin) */}
-      <path id="at5a" d="M 96,108 V 122 H 108"
+      {/* T_RTC_MCU: RTC also connects directly to ATmega (I2C SDA/SCL) */}
+      <path id="tRtcMcu" d="M 68,46 V 60 H 82 V 79"
         fill="none" stroke="#C9913A" strokeWidth="1" strokeOpacity="0.4" strokeLinecap="round"
         strokeDasharray="200" strokeDashoffset="200"
-        style={{ animation: 'alarmTraceDraw 0.5s ease-out 1.2s forwards' }} />
+        style={{animation:'alarmTraceDraw 0.6s ease-out 0.5s forwards'}} />
 
-      {/* T5b: ATmega → Crystal (right pin) */}
-      <path id="at5b" d="M 144,108 V 122 H 132"
-        fill="none" stroke="#C9913A" strokeWidth="1" strokeOpacity="0.4" strokeLinecap="round"
+      {/* T_OLED: OLED → ATmega top (I2C) */}
+      <path id="tOled" d="M 120,22 V 72"
+        fill="none" stroke="#C9913A" strokeWidth="1" strokeOpacity="0.45" strokeLinecap="round"
+        strokeDasharray="100" strokeDashoffset="100"
+        style={{animation:'alarmTraceDraw 0.4s ease-out 0.75s forwards'}} />
+
+      {/* T_MOSFET: ATmega right → MOSFET (PWM) */}
+      <path id="tMosfet" d="M 162,83 H 196"
+        fill="none" stroke="#C9913A" strokeWidth="1" strokeOpacity="0.45" strokeLinecap="round"
+        strokeDasharray="100" strokeDashoffset="100"
+        style={{animation:'alarmTraceDraw 0.4s ease-out 0.9s forwards'}} />
+
+      {/* T_BUZZ: ATmega right → Buzzer (PWM audio) */}
+      <path id="tBuzz" d="M 162,91 H 178 V 137 H 198"
+        fill="none" stroke="#C9913A" strokeWidth="1" strokeOpacity="0.45" strokeLinecap="round"
         strokeDasharray="200" strokeDashoffset="200"
-        style={{ animation: 'alarmTraceDraw 0.5s ease-out 1.35s forwards' }} />
+        style={{animation:'alarmTraceDraw 0.6s ease-out 1.05s forwards'}} />
 
-      {/* T6: Buttons → ATmega  (GPIO lines) */}
-      <path id="at6" d="M 31,136 V 128 H 82 V 108"
+      {/* T_XTAL_L: ATmega → Crystal left pin */}
+      <path id="tXtalL" d="M 100,128 V 148 H 109"
+        fill="none" stroke="#C9913A" strokeWidth="0.9" strokeOpacity="0.38" strokeLinecap="round"
+        strokeDasharray="100" strokeDashoffset="100"
+        style={{animation:'alarmTraceDraw 0.4s ease-out 1.2s forwards'}} />
+
+      {/* T_XTAL_R: ATmega → Crystal right pin */}
+      <path id="tXtalR" d="M 140,128 V 148 H 131"
+        fill="none" stroke="#C9913A" strokeWidth="0.9" strokeOpacity="0.38" strokeLinecap="round"
+        strokeDasharray="100" strokeDashoffset="100"
+        style={{animation:'alarmTraceDraw 0.4s ease-out 1.3s forwards'}} />
+
+      {/* T_BTNS: Buttons → ATmega bottom-left (GPIO) */}
+      <path id="tBtns" d="M 38,138 V 132 H 78 V 128"
         fill="none" stroke="#C9913A" strokeWidth="0.9" strokeOpacity="0.35" strokeLinecap="round"
-        strokeDasharray="250" strokeDashoffset="250"
-        style={{ animation: 'alarmTraceDraw 0.6s ease-out 1.55s forwards' }} />
+        strokeDasharray="150" strokeDashoffset="150"
+        style={{animation:'alarmTraceDraw 0.5s ease-out 1.4s forwards'}} />
 
-      {/* ======= SIGNAL PULSES — animateMotion dots travelling the traces ======= */}
-      {/*
-        Each <circle> carries a small glowing dot.
-        <animateMotion> moves it along the named <path> using <mpath href>.
-        begin delay is staggered so pulses feel organic, not simultaneous.
-        repeatCount="indefinite" keeps them looping forever.
-      */}
-
-      {/* Pulse: OLED → ATmega (I2C) */}
-      <circle r="2" fill="#C9913A" opacity="0.9">
-        <animateMotion dur="1.6s" begin="1.5s" repeatCount="indefinite">
-          <mpath href="#at1" />
-        </animateMotion>
-        <animate attributeName="opacity" values="0;0.9;0.9;0" keyTimes="0;0.05;0.9;1" dur="1.6s" begin="1.5s" repeatCount="indefinite" />
+      {/* ══════════════════════ SIGNAL PULSES ══════════════════════ */}
+      {/* CoinCell → RTC (power) */}
+      <circle r="2" fill="#C9913A" opacity="0">
+        <animateMotion dur="1s" begin="1.8s" repeatCount="indefinite"><mpath href="#tBatt"/></animateMotion>
+        <animate attributeName="opacity" values="0;0.9;0.9;0" keyTimes="0;0.1;0.85;1" dur="1s" begin="1.8s" repeatCount="indefinite"/>
       </circle>
 
-      {/* Pulse: RTC → ATmega (I2C) */}
-      <circle r="2" fill="#C9913A" opacity="0.9">
-        <animateMotion dur="1.9s" begin="2.0s" repeatCount="indefinite">
-          <mpath href="#at2" />
-        </animateMotion>
-        <animate attributeName="opacity" values="0;0.9;0.9;0" keyTimes="0;0.05;0.9;1" dur="1.9s" begin="2.0s" repeatCount="indefinite" />
+      {/* RTC → WiFi */}
+      <circle r="2" fill="#C9913A" opacity="0">
+        <animateMotion dur="1.4s" begin="2.2s" repeatCount="indefinite"><mpath href="#tRtcNet"/></animateMotion>
+        <animate attributeName="opacity" values="0;0.9;0.9;0" keyTimes="0;0.1;0.85;1" dur="1.4s" begin="2.2s" repeatCount="indefinite"/>
       </circle>
 
-      {/* Pulse: ATmega → MOSFET (PWM) — faster, it's a high-freq signal */}
-      <circle r="1.8" fill="#C9913A" opacity="0.9">
-        <animateMotion dur="1.2s" begin="2.3s" repeatCount="indefinite">
-          <mpath href="#at3" />
-        </animateMotion>
-        <animate attributeName="opacity" values="0;0.9;0.9;0" keyTimes="0;0.05;0.9;1" dur="1.2s" begin="2.3s" repeatCount="indefinite" />
-      </circle>
-      {/* Second PWM pulse slightly offset */}
-      <circle r="1.8" fill="#C9913A" opacity="0.9">
-        <animateMotion dur="1.2s" begin="2.9s" repeatCount="indefinite">
-          <mpath href="#at3" />
-        </animateMotion>
-        <animate attributeName="opacity" values="0;0.9;0.9;0" keyTimes="0;0.05;0.9;1" dur="1.2s" begin="2.9s" repeatCount="indefinite" />
+      {/* WiFi → ATmega (data) */}
+      <circle r="2" fill="#C9913A" opacity="0">
+        <animateMotion dur="1.8s" begin="2.8s" repeatCount="indefinite"><mpath href="#tNetMcu"/></animateMotion>
+        <animate attributeName="opacity" values="0;0.9;0.9;0" keyTimes="0;0.1;0.85;1" dur="1.8s" begin="2.8s" repeatCount="indefinite"/>
       </circle>
 
-      {/* Pulse: ATmega → Buzzer (audio PWM) */}
-      <circle r="1.8" fill="#C9913A" opacity="0.9">
-        <animateMotion dur="1.5s" begin="2.6s" repeatCount="indefinite">
-          <mpath href="#at4" />
-        </animateMotion>
-        <animate attributeName="opacity" values="0;0.9;0.9;0" keyTimes="0;0.05;0.9;1" dur="1.5s" begin="2.6s" repeatCount="indefinite" />
+      {/* RTC → ATmega (I2C) */}
+      <circle r="1.8" fill="#C9913A" opacity="0">
+        <animateMotion dur="1.6s" begin="2.5s" repeatCount="indefinite"><mpath href="#tRtcMcu"/></animateMotion>
+        <animate attributeName="opacity" values="0;0.9;0.9;0" keyTimes="0;0.1;0.85;1" dur="1.6s" begin="2.5s" repeatCount="indefinite"/>
       </circle>
 
-      {/* Pulse: Button → ATmega (GPIO interrupt) — slower, event-driven */}
-      <circle r="1.8" fill="#F5F0E8" opacity="0.7">
-        <animateMotion dur="2.2s" begin="3.5s" repeatCount="indefinite">
-          <mpath href="#at6" />
-        </animateMotion>
-        <animate attributeName="opacity" values="0;0.7;0.7;0" keyTimes="0;0.05;0.9;1" dur="2.2s" begin="3.5s" repeatCount="indefinite" />
+      {/* OLED → ATmega (I2C) */}
+      <circle r="1.8" fill="#C9913A" opacity="0">
+        <animateMotion dur="1.3s" begin="3s" repeatCount="indefinite"><mpath href="#tOled"/></animateMotion>
+        <animate attributeName="opacity" values="0;0.9;0.9;0" keyTimes="0;0.1;0.85;1" dur="1.3s" begin="3s" repeatCount="indefinite"/>
       </circle>
 
-      {/* Pulsing glow at ATmega core — heartbeat of the MCU */}
-      <circle cx="120" cy="80" r="5" fill="#C9913A" opacity="0.7">
-        <animate attributeName="r" values="5;10;5" dur="2.8s" repeatCount="indefinite" />
-        <animate attributeName="opacity" values="0.7;0.15;0.7" dur="2.8s" repeatCount="indefinite" />
+      {/* ATmega → MOSFET (PWM) */}
+      <circle r="1.8" fill="#C9913A" opacity="0">
+        <animateMotion dur="0.9s" begin="3.4s" repeatCount="indefinite"><mpath href="#tMosfet"/></animateMotion>
+        <animate attributeName="opacity" values="0;0.9;0.9;0" keyTimes="0;0.1;0.85;1" dur="0.9s" begin="3.4s" repeatCount="indefinite"/>
+      </circle>
+      <circle r="1.8" fill="#C9913A" opacity="0">
+        <animateMotion dur="0.9s" begin="4.1s" repeatCount="indefinite"><mpath href="#tMosfet"/></animateMotion>
+        <animate attributeName="opacity" values="0;0.9;0.9;0" keyTimes="0;0.1;0.85;1" dur="0.9s" begin="4.1s" repeatCount="indefinite"/>
+      </circle>
+
+      {/* ATmega → Buzzer */}
+      <circle r="1.8" fill="#C9913A" opacity="0">
+        <animateMotion dur="1.5s" begin="3.8s" repeatCount="indefinite"><mpath href="#tBuzz"/></animateMotion>
+        <animate attributeName="opacity" values="0;0.9;0.9;0" keyTimes="0;0.1;0.85;1" dur="1.5s" begin="3.8s" repeatCount="indefinite"/>
+      </circle>
+
+      {/* Buttons → ATmega (event-driven, cream colour) */}
+      <circle r="1.8" fill="#F5F0E8" opacity="0">
+        <animateMotion dur="2s" begin="4.5s" repeatCount="indefinite"><mpath href="#tBtns"/></animateMotion>
+        <animate attributeName="opacity" values="0;0.7;0.7;0" keyTimes="0;0.1;0.85;1" dur="2s" begin="4.5s" repeatCount="indefinite"/>
+      </circle>
+
+      {/* ATmega heartbeat glow */}
+      <circle cx="120" cy="100" r="5" fill="#C9913A">
+        <animate attributeName="r" values="5;11;5" dur="2.8s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.7;0.12;0.7" dur="2.8s" repeatCount="indefinite"/>
       </circle>
     </svg>
   )
 }
 
-// --- Autonomous Suitcase: Top-down navigation with obstacles ---
-// Shows an overhead floor plan view. Static obstacle blocks (furniture/walls)
-// are placed around the space. The USER dot follows a path that navigates
-// AROUND the obstacles. The suitcase follows the user with a lag.
-// Ultrasonic arcs pulse from the suitcase front, representing its sensors.
+// --- Autonomous Suitcase: Top-down hallway navigation ---
+// Scene: A corridor viewed from above. Two obstacles jut from opposing walls
+// (like a luggage trolley from one side, a kiosk from the other).
+// The user walks a realistic left-to-right path, squeezing between obstacles.
+// The suitcase follows ~1.2s behind with ultrasonic sensing arcs pulsing forward.
 function SuitcaseViz() {
-  // The user's navigation waypoints — deliberately routed around the obstacle blocks.
-  // These are (cx, cy) keyframe positions as a fraction of the 9s animation.
-  // Path: Start centre → dodge right around block1 → squeeze past block2 →
-  //       curve around block3 → return home.
-  const userPath = 'M 60,80 L 85,55 L 115,50 L 150,65 L 168,90 L 155,118 L 120,125 L 80,110 L 60,80'
-  // Suitcase follows the same path but with a slight delay (lag effect)
-  const suitPath = 'M 60,80 L 85,55 L 115,50 L 150,65 L 168,90 L 155,118 L 120,125 L 80,110 L 60,80'
+  // HALLWAY GEOMETRY:
+  // Corridor runs horizontally. Top wall y=30, bottom wall y=130.
+  // Navigable corridor centre is y=80 (midpoint).
+  //
+  // OBSTACLES:
+  //   Obs A: juts DOWN from top wall (x=75–105, y=30–68) — trolley/cart
+  //   Obs B: juts UP from bottom wall (x=135–165, y=92–130) — kiosk/bin
+  //
+  // PATH LOGIC (left to right, one pass):
+  //   1. Enter from left at corridor centre (x=8, y=80)
+  //   2. Approach Obs A — dip below it (y rises to ~88)
+  //   3. Squeeze through the gap between Obs A bottom (y=68) and corridor centre
+  //      — travel at y=78, threading between the two obstacles
+  //   4. Approach Obs B — rise above it (y drops to ~72)
+  //   5. Exit corridor right side (x=232, y=80)
+  const userPath = 'M 8,80 L 55,80 L 72,90 L 90,88 L 110,82 L 128,76 L 148,70 L 168,78 L 188,80 L 232,80'
+  const suitPath = 'M 8,80 L 55,80 L 72,90 L 90,88 L 110,82 L 128,76 L 148,70 L 168,78 L 188,80 L 232,80'
 
   return (
     <svg viewBox="0 0 240 160" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
       <style>{`
-        @keyframes suitArc {
-          0%   { r: 6; opacity: 0.55; }
-          100% { r: 28; opacity: 0; }
-        }
-        @keyframes obstaclePulse {
-          0%, 100% { fill-opacity: 0.08; }
-          50%       { fill-opacity: 0.14; }
+        @keyframes obsPulse {
+          0%, 100% { fill-opacity: 0.07; }
+          50%       { fill-opacity: 0.15; }
         }
       `}</style>
 
-      {/* Floor tile grid — top-down architectural view */}
-      {[0,1,2,3,4,5,6].map(i => (
-        <line key={`fh${i}`} x1="0" y1={i * 24} x2="240" y2={i * 24}
-          stroke="#F5F0E8" strokeOpacity="0.04" strokeWidth="0.5" />
+      {/* ── HALLWAY BACKGROUND ── */}
+      <rect x="0" y="0" width="240" height="160" fill="#07080F" rx="2" />
+
+      {/* Floor tiles inside corridor — subtle hatching */}
+      {[0,1,2,3,4].map(i => (
+        <line key={`ft${i}`} x1={i*50} y1="30" x2={i*50+50} y2="130"
+          stroke="#F5F0E8" strokeOpacity="0.025" strokeWidth="0.5"/>
       ))}
-      {[0,1,2,3,4,5,6,7,8,9].map(i => (
-        <line key={`fv${i}`} x1={i * 27} y1="0" x2={i * 27} y2="160"
-          stroke="#F5F0E8" strokeOpacity="0.04" strokeWidth="0.5" />
-      ))}
 
-      {/* ======= OBSTACLE BLOCKS (furniture / walls) ======= */}
-      {/*
-        These are fixed rectangular objects in the space.
-        The user's path visibly routes around all of them.
-        They have a subtle fill pulse to feel "physical" rather than drawn.
-      */}
+      {/* ── CORRIDOR WALLS (solid lines top and bottom) ── */}
+      {/* Top wall */}
+      <rect x="0" y="0" width="240" height="30"
+        fill="#F5F0E8" fillOpacity="0.04" />
+      <line x1="0" y1="30" x2="240" y2="30"
+        stroke="#F5F0E8" strokeOpacity="0.35" strokeWidth="1.5"/>
+      <text x="8" y="20" fontSize="4"
+        fill="#F5F0E8" opacity="0.18" fontFamily="monospace">WALL</text>
 
-      {/* Block 1 — large obstacle, upper-left area */}
-      <rect x="12" y="28" width="42" height="28" rx="2"
-        fill="#F5F0E8" fillOpacity="0.06" stroke="#F5F0E8" strokeOpacity="0.15" strokeWidth="0.8"
-        style={{ animation: 'obstaclePulse 4s ease-in-out infinite' }} />
-      <text x="33" y="44" textAnchor="middle" fontSize="4"
-        fill="#F5F0E8" opacity="0.2" fontFamily="monospace">OBS</text>
+      {/* Bottom wall */}
+      <rect x="0" y="130" width="240" height="30"
+        fill="#F5F0E8" fillOpacity="0.04" />
+      <line x1="0" y1="130" x2="240" y2="130"
+        stroke="#F5F0E8" strokeOpacity="0.35" strokeWidth="1.5"/>
+      <text x="8" y="145" fontSize="4"
+        fill="#F5F0E8" opacity="0.18" fontFamily="monospace">WALL</text>
 
-      {/* Block 2 — mid-top corridor narrower */}
-      <rect x="100" y="14" width="26" height="22" rx="2"
-        fill="#F5F0E8" fillOpacity="0.06" stroke="#F5F0E8" strokeOpacity="0.15" strokeWidth="0.8"
-        style={{ animation: 'obstaclePulse 4s ease-in-out 1s infinite' }} />
-      <text x="113" y="27" textAnchor="middle" fontSize="4"
-        fill="#F5F0E8" opacity="0.2" fontFamily="monospace">OBS</text>
+      {/* ── OBSTACLE A: juts DOWN from top wall (trolley / cart) ── */}
+      {/* x=72–108, y=30–70 — leaves gap on south side before bottom wall */}
+      <rect x="72" y="30" width="36" height="40"
+        fill="#F5F0E8" fillOpacity="0.06" stroke="#F5F0E8" strokeOpacity="0.25" strokeWidth="1"
+        style={{animation:'obsPulse 3s ease-in-out infinite'}} />
+      {/* Trolley detail — two small wheel circles */}
+      <circle cx="80" cy="66" r="3.5" fill="none" stroke="#F5F0E8" strokeOpacity="0.2" strokeWidth="0.7"/>
+      <circle cx="100" cy="66" r="3.5" fill="none" stroke="#F5F0E8" strokeOpacity="0.2" strokeWidth="0.7"/>
+      <line x1="80" y1="38" x2="100" y2="38"
+        stroke="#F5F0E8" strokeOpacity="0.15" strokeWidth="0.6"/>
+      <text x="90" y="52" textAnchor="middle" fontSize="4"
+        fill="#F5F0E8" opacity="0.25" fontFamily="monospace">CART</text>
 
-      {/* Block 3 — right side wall section */}
-      <rect x="186" y="52" width="46" height="56" rx="2"
-        fill="#F5F0E8" fillOpacity="0.06" stroke="#F5F0E8" strokeOpacity="0.15" strokeWidth="0.8"
-        style={{ animation: 'obstaclePulse 4s ease-in-out 2s infinite' }} />
-      <text x="209" y="82" textAnchor="middle" fontSize="4"
-        fill="#F5F0E8" opacity="0.2" fontFamily="monospace">OBS</text>
+      {/* ── OBSTACLE B: juts UP from bottom wall (kiosk / bin) ── */}
+      {/* x=132–168, y=90–130 — leaves gap on north side */}
+      <rect x="132" y="90" width="36" height="40"
+        fill="#F5F0E8" fillOpacity="0.06" stroke="#F5F0E8" strokeOpacity="0.25" strokeWidth="1"
+        style={{animation:'obsPulse 3s ease-in-out 1.5s infinite'}} />
+      {/* Kiosk detail — small screen rect */}
+      <rect x="139" y="96" width="22" height="14" fill="none"
+        stroke="#F5F0E8" strokeOpacity="0.15" strokeWidth="0.6"/>
+      <text x="150" y="120" textAnchor="middle" fontSize="4"
+        fill="#F5F0E8" opacity="0.25" fontFamily="monospace">KIOSK</text>
 
-      {/* Block 4 — bottom-centre obstacle */}
-      <rect x="90" y="134" width="58" height="20" rx="2"
-        fill="#F5F0E8" fillOpacity="0.06" stroke="#F5F0E8" strokeOpacity="0.15" strokeWidth="0.8"
-        style={{ animation: 'obstaclePulse 4s ease-in-out 3s infinite' }} />
-      <text x="119" y="147" textAnchor="middle" fontSize="4"
-        fill="#F5F0E8" opacity="0.2" fontFamily="monospace">OBS</text>
-
-      {/* ======= FAINT PLANNED PATH LINE ======= */}
-      {/* Shows the calculated navigation route — the algorithm's output */}
+      {/* ── PLANNED PATH — faint dashed line the algorithm calculated ── */}
       <path d={userPath} fill="none"
-        stroke="#C9913A" strokeWidth="0.7" strokeOpacity="0.15"
-        strokeDasharray="4 4" />
+        stroke="#C9913A" strokeWidth="0.8" strokeOpacity="0.18"
+        strokeDasharray="5 4"/>
 
-      {/* ======= SUITCASE (lags behind user) ======= */}
+      {/* ── SUITCASE (lags 1.2s behind user) ── */}
       <g>
-        {/* Ultrasonic sensor arcs — 3 cascading pulses */}
-        {[0, 0.5, 1].map(offset => (
-          <circle key={`arc${offset}`} r="6" fill="none"
-            stroke="#C9913A" strokeWidth="0.9" opacity="0">
-            <animateMotion dur="9s" begin={`${offset * 3}s`} repeatCount="indefinite">
-              <mpath href="#suitcasePath" />
+        {/* Ultrasonic arcs — pulse FORWARD (to the right) from suitcase */}
+        {[0, 0.55, 1.1].map(offset => (
+          <circle key={`arc${offset}`} r="5" fill="none"
+            stroke="#C9913A" strokeWidth="0.85" opacity="0">
+            <animateMotion dur="8s" begin={`${1.2 + offset*0.5}s`} repeatCount="indefinite">
+              <mpath href="#suitPath"/>
             </animateMotion>
-            <animate attributeName="r" values="6;28" dur="1.4s" repeatCount="indefinite" begin={`${offset}s`} />
-            <animate attributeName="opacity" values="0.55;0" dur="1.4s" repeatCount="indefinite" begin={`${offset}s`} />
+            <animate attributeName="r" values="5;22" dur="1.2s" begin={`${offset}s`} repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.5;0" dur="1.2s" begin={`${offset}s`} repeatCount="indefinite"/>
           </circle>
         ))}
 
-        {/* Suitcase body — top-down silhouette */}
-        <rect x="-10" y="-12" width="20" height="24" rx="2"
-          fill="none" stroke="#C9913A" strokeOpacity="0.7" strokeWidth="1.2">
-          <animateMotion dur="9s" begin="1.5s" repeatCount="indefinite">
-            <mpath href="#suitcasePath" />
+        {/* Suitcase body — upright rectangle (top-down view) */}
+        <rect x="-9" y="-11" width="18" height="22" rx="2"
+          fill="#0C1220" stroke="#C9913A" strokeOpacity="0.75" strokeWidth="1.3">
+          <animateMotion dur="8s" begin="1.2s" repeatCount="indefinite">
+            <mpath href="#suitPath"/>
           </animateMotion>
         </rect>
-        {/* Handle nub */}
-        <line x1="-4" y1="-12" x2="4" y2="-12"
-          stroke="#C9913A" strokeOpacity="0.5" strokeWidth="1">
-          <animateMotion dur="9s" begin="1.5s" repeatCount="indefinite">
-            <mpath href="#suitcasePath" />
+        {/* Handle top */}
+        <line x1="-5" y1="-11" x2="5" y2="-11"
+          stroke="#C9913A" strokeOpacity="0.55" strokeWidth="1.2">
+          <animateMotion dur="8s" begin="1.2s" repeatCount="indefinite">
+            <mpath href="#suitPath"/>
+          </animateMotion>
+        </line>
+        {/* Centre divider line */}
+        <line x1="0" y1="-11" x2="0" y2="11"
+          stroke="#C9913A" strokeOpacity="0.2" strokeWidth="0.5">
+          <animateMotion dur="8s" begin="1.2s" repeatCount="indefinite">
+            <mpath href="#suitPath"/>
           </animateMotion>
         </line>
       </g>
 
-      {/* ======= USER DOT (leads the suitcase) ======= */}
-      <circle r="5" fill="#F5F0E8" opacity="0.8">
-        <animateMotion dur="9s" repeatCount="indefinite">
-          <mpath href="#userPath" />
+      {/* ── USER DOT ── */}
+      <circle r="5" fill="#F5F0E8" opacity="0.85">
+        <animateMotion dur="8s" repeatCount="indefinite">
+          <mpath href="#userPath"/>
         </animateMotion>
       </circle>
-      {/* USER label travels with the dot */}
+      {/* USER label above the dot */}
       <text dy="-9" textAnchor="middle" fontSize="4.5"
-        fill="#F5F0E8" opacity="0.35" fontFamily="monospace">USER
-        <animateMotion dur="9s" repeatCount="indefinite">
-          <mpath href="#userPath" />
+        fill="#F5F0E8" opacity="0.4" fontFamily="monospace">USER
+        <animateMotion dur="8s" repeatCount="indefinite">
+          <mpath href="#userPath"/>
         </animateMotion>
       </text>
 
-      {/* Named paths — referenced by animateMotion above */}
+      {/* Named paths (in <defs> so they don't render visually) */}
       <defs>
-        <path id="userPath" d={userPath} />
-        <path id="suitcasePath" d={suitPath} />
+        <path id="userPath" d={userPath}/>
+        <path id="suitPath" d={suitPath}/>
       </defs>
 
+      {/* Entry/exit arrows */}
+      <text x="4" y="84" fontSize="6" fill="#C9913A" opacity="0.25" fontFamily="monospace">›</text>
+      <text x="228" y="84" fontSize="6" fill="#C9913A" opacity="0.25" fontFamily="monospace">›</text>
+
       {/* OVERHEAD label */}
-      <text x="228" y="12" textAnchor="end" fontSize="4.5"
-        fill="#F5F0E8" opacity="0.12" fontFamily="monospace">OVERHEAD</text>
+      <text x="232" y="148" textAnchor="end" fontSize="4"
+        fill="#F5F0E8" opacity="0.1" fontFamily="monospace">OVERHEAD VIEW</text>
     </svg>
   )
 }
