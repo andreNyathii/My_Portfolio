@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 
 // ============================================================
 // ICON DICTIONARY
@@ -915,8 +916,12 @@ function Projects() {
             const Viz = project.Viz
 
             return (
-              <div
+              <motion.div
                 key={project.title}
+                initial={{ opacity: 0, y: 45 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
                 className={`flex flex-col gap-10 md:gap-16 ${isReversed ? 'md:flex-row-reverse' : 'md:flex-row'} items-center`}
               >
 
@@ -977,7 +982,7 @@ function Projects() {
                   </div>
                 </div>
 
-              </div>
+              </motion.div>
             )
           })}
 
@@ -1026,7 +1031,13 @@ function Projects() {
       <section className="py-32 px-8 border-t border-white/5 relative overflow-hidden">
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-[300px] bg-gold/[0.02] blur-[80px] pointer-events-none" />
 
-        <div className="max-w-3xl mx-auto relative z-10 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="max-w-3xl mx-auto relative z-10 text-center"
+        >
           <span className="text-gold/50 text-[10px] tracking-[0.6em] uppercase block mb-6">
             Community & Support
           </span>
@@ -1061,7 +1072,7 @@ function Projects() {
               </Link>
             </div>
           </div>
-        </div>
+        </motion.div>
       </section>
 
     </div>

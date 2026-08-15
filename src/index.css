@@ -1,19 +1,86 @@
-/* 
-  @import MUST come before @tailwind directives — this is a CSS spec rule.
-  Tailwind's base/components/utilities layers inject CSS, and any @import
-  after them gets ignored or throws a warning.
-*/
+/*
+ * index.css — Global Stylesheet Entry Point
+ *
+ * This is the first CSS file loaded by the application (imported in main.jsx).
+ * It has two jobs:
+ *   1. Inject Tailwind's generated utility classes into the browser.
+ *   2. Define a small set of truly global styles that apply site-wide.
+ *
+ * Rule: keep this file minimal. All component-level styling belongs in JSX
+ * files as Tailwind utility classes, not here as custom CSS rules.
+ */
+
+/*
+ * @import must appear before any other CSS statements.
+ * This is a CSS specification requirement — browsers ignore @import
+ * declarations that appear after any other rule.
+ *
+ * We load both fonts in a single Google Fonts request (more efficient
+ * than two separate <link> tags or @import calls):
+ *
+ *   Italiana  — tall, elegant Italian serif. Used for headings, nav links,
+ *               display text, and CTA buttons. Defines the character of the site.
+ *
+ *   Inter     — clean geometric sans-serif. Used for body copy, descriptions,
+ *               tags, and labels. Optimised for screen readability.
+ *
+ * display=swap: instructs the browser to show a fallback font immediately
+ * rather than hiding text while the custom font loads. This prevents the
+ * "invisible text" flash known as FOIT (Flash of Invisible Text).
+ */
 @import url('https://fonts.googleapis.com/css2?family=Italiana&family=Inter:wght@300;400;500&display=swap');
 
+/*
+ * Tailwind Directives
+ *
+ * These three lines are how Tailwind injects its CSS into the page.
+ * They are NOT standard CSS — PostCSS transforms them at build time.
+ *
+ * @tailwind base
+ *   Injects Tailwind's "Preflight" — a CSS reset that normalises
+ *   browser inconsistencies (e.g. removes default margins, resets
+ *   heading sizes, removes list bullet styles). Works like normalize.css.
+ *
+ * @tailwind components
+ *   Injects any component classes registered via Tailwind plugins.
+ *   Currently empty — no plugins are in use in this project.
+ *
+ * @tailwind utilities
+ *   Injects all the generated utility classes (bg-gold, text-cream, flex,
+ *   grid, etc.). This is the largest injection and the one you use daily.
+ *   Tailwind only generates classes found in the files listed in content[]
+ *   inside tailwind.config.js, keeping the output bundle small.
+ */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Global base styles */
+/*
+ * Global Base Styles
+ *
+ * Applied to the <body> element. These are the only plain CSS rules in the
+ * project — everything else is Tailwind utilities in JSX files.
+ *
+ * These properties are set here rather than on a wrapper div because they
+ * need to apply to the entire document, not just the React root.
+ */
 body {
+  /* Background: the deepest dark in the palette — near-black, not pure black.
+     Pure black (#000) often reads as harsh or flat. #0D0D0D has warmth. */
   background-color: #0D0D0D;
+
+  /* Default text: cream instead of white.
+     Off-white text on near-black reduces eye strain compared to #fff on #000. */
   color: #F5F0E8;
+
+  /* Fallback font stack for body text.
+     'Inter' is the primary — loaded via @import above.
+     sans-serif is the browser's generic fallback if Inter fails to load. */
   font-family: 'Inter', sans-serif;
+
+  /* -webkit-font-smoothing: antialiased
+     Applies subpixel antialiasing to text on macOS/iOS WebKit browsers.
+     Makes fonts appear thinner and crisper on high-DPI screens.
+     Without this, text can look slightly blurry or bold on Retina displays. */
   -webkit-font-smoothing: antialiased;
 }
-

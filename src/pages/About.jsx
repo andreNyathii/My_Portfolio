@@ -208,7 +208,7 @@ function About() {
               <div className="grid grid-cols-2 gap-4 mt-2">
                 {[
                   { label: 'Based In',    value: 'Kleve, Germany' },
-                  { label: 'Email',       value: 'andrenyathi@gmail.com' },
+                  { label: 'Email',       value: 'andremdu48@gmail.com' },
                   { label: 'Languages',   value: 'EN · DE (B1) · ZU' },
                   { label: 'Graduation',  value: '01.03.2027' },
                 ].map((item) => (
