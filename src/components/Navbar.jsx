@@ -35,7 +35,7 @@ function Navbar() {
         {/* === LOGO (left-anchored) === */}
         {/* NavLink to="/"  → clicking logo goes home, no page reload */}
         {/* flex items-center → centers the image vertically within the link */}
-        <NavLink to="/" className="flex items-center">
+        <NavLink to="/" className="hidden md:flex items-center">
 
           {/* === LOGO CROPPING WRAPPER === */}
           {/* The Logo.jpg file has a cream/white border baked INTO the image itself. */}

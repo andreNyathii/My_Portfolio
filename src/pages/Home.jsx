@@ -38,6 +38,18 @@ const techStack = [
     logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg',
   },
   {
+    name: 'Tailwind',
+    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg',
+  },
+  {
+    name: 'HTML5',
+    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg',
+  },
+  {
+    name: 'CSS3',
+    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg',
+  },
+  {
     name: 'C#',
     logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/csharp/csharp-original.svg',
   },
@@ -52,6 +64,14 @@ const techStack = [
   {
     name: 'Python',
     logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg',
+  },
+  {
+    name: 'KiCad',
+    logo: 'https://cdn.simpleicons.org/kicad/white',
+  },
+  {
+    name: 'EAGLE',
+    logo: 'https://cdn.simpleicons.org/autodesk/white', // EAGLE is an Autodesk product
   },
   {
     name: 'Arduino',
