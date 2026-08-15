@@ -5,6 +5,27 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.3.0] — 2026-08-16
+
+### Added
+- **Framer Motion (`motion.dev`) Integration** — installed and integrated for declarative React animations and scroll reveals.
+- **Dynamic Projects SVG Visuals** — custom domain-inspired inline SVG visual panels for all projects:
+  - *EasySchedule*: Multi-phase constraint solver animation with gold-to-green state transitions.
+  - *EcoNode Telemetry*: Real-time telemetry sine wave drawing with ESP32 & MQTT status indicators.
+  - *Accessible Alarm*: KiCad-inspired PCB trace routing with active signal pulses using `animateMotion`.
+  - *Autonomous Suitcase*: Top-down obstacle avoidance simulation with ultrasonic sensing arcs.
+  - *Fleet Tracker*: Dot-matrix tracking map with pulsed node coordinates.
+- **Scroll-Triggered Reveals** — wrapped project cards and philanthropy sections in `<motion.div>` with `whileInView` triggers.
+- **Contact Page Form Integration** — FormSubmit.co integration with honeypot spam protection and validation states.
+- **Feature Branching Workflow** — adopted standard Git branch workflow (`feat/motion-dev`).
+
+### Changed
+- `About.jsx` — modernized skills hierarchy and updated primary contact email.
+- `Navbar.jsx` — added responsive hiding (`hidden md:flex`) to the logo container to prevent overlap on mobile viewports.
+- Tech Stack grids across Home and Projects pages expanded with KiCad, EAGLE, Docker, and full-stack tools.
+
+---
+
 ## [0.2.0] — 2026-08-08
 
 ### Added
