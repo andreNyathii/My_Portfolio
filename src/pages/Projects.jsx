@@ -510,32 +510,80 @@ function AlarmViz() {
         strokeDasharray="100" strokeDashoffset="100"
         style={{animation:'alarmTraceDraw 0.4s ease-out 1.3s forwards'}} />
 
-      {/* J_OLED: 4-pin vertical jumper header — open space, left side above buttons */}
-      {/* Pins: VCC · GND · SCL · SDA — standard I2C OLED connector pinout */}
-      {/* Each pin is a small open square (schematic jumper symbol) stacked vertically */}
-      {['VCC','GND','SCL','SDA'].map((label, i) => (
-        <g key={`jop${i}`}>
-          {/* Jumper pin body — hollow square */}
-          <rect x="10" y={93 + i * 11} width="9" height="9" fill="#0C1220"
-            stroke="#C9913A" strokeOpacity="0.55" strokeWidth="0.75" />
-          {/* Short nub on the right side — the wire exit point */}
-          <line x1="19" y1={97 + i * 11} x2="23" y2={97 + i * 11}
-            stroke="#C9913A" strokeOpacity="0.45" strokeWidth="0.7" />
-          {/* Pin label to the left */}
-          <text x="8" y={99 + i * 11} textAnchor="end" fontSize="2.8"
-            fill="#C9913A" opacity="0.35" fontFamily="monospace">{label}</text>
-        </g>
-      ))}
+      {/* J_OLED: 4-pin vertical jumper header — left side, raised for clearance */}
+      {/* Outer pins (VCC, SDA) sit wider apart; inner pins (GND, SCL) are tighter. */}
+      {/* This produces the 45° fan-in trace routing below. */}
+
+      {/* VCC — outer top: box y=74, nub exits at y=78 */}
+      <rect x="10" y="74" width="9" height="9" fill="#0C1220"
+        stroke="#C9913A" strokeOpacity="0.55" strokeWidth="0.75" />
+      <line x1="19" y1="78" x2="23" y2="78"
+        stroke="#C9913A" strokeOpacity="0.45" strokeWidth="0.7" />
+      <text x="8" y="80" textAnchor="end" fontSize="2.8"
+        fill="#C9913A" opacity="0.35" fontFamily="monospace">VCC</text>
+
+      {/* GND — inner: box y=88, nub exits at y=92 */}
+      <rect x="10" y="88" width="9" height="9" fill="#0C1220"
+        stroke="#C9913A" strokeOpacity="0.55" strokeWidth="0.75" />
+      <line x1="19" y1="92" x2="23" y2="92"
+        stroke="#C9913A" strokeOpacity="0.45" strokeWidth="0.7" />
+      <text x="8" y="94" textAnchor="end" fontSize="2.8"
+        fill="#C9913A" opacity="0.35" fontFamily="monospace">GND</text>
+
+      {/* SCL — inner: box y=96, nub exits at y=100 */}
+      <rect x="10" y="96" width="9" height="9" fill="#0C1220"
+        stroke="#C9913A" strokeOpacity="0.55" strokeWidth="0.75" />
+      <line x1="19" y1="100" x2="23" y2="100"
+        stroke="#C9913A" strokeOpacity="0.45" strokeWidth="0.7" />
+      <text x="8" y="102" textAnchor="end" fontSize="2.8"
+        fill="#C9913A" opacity="0.35" fontFamily="monospace">SCL</text>
+
+      {/* SDA — outer bottom: box y=110, nub exits at y=114 */}
+      <rect x="10" y="110" width="9" height="9" fill="#0C1220"
+        stroke="#C9913A" strokeOpacity="0.55" strokeWidth="0.75" />
+      <line x1="19" y1="114" x2="23" y2="114"
+        stroke="#C9913A" strokeOpacity="0.45" strokeWidth="0.7" />
+      <text x="8" y="116" textAnchor="end" fontSize="2.8"
+        fill="#C9913A" opacity="0.35" fontFamily="monospace">SDA</text>
+
       {/* Connector label above the header */}
-      <text x="14" y="90" textAnchor="middle" fontSize="2.8"
+      <text x="14" y="71" textAnchor="middle" fontSize="2.8"
         fill="#C9913A" opacity="0.3" fontFamily="monospace">J_OLED</text>
 
-      {/* T_OLED_J: OLED jumper → ATmega left pins (I2C SDA/SCL) */}
-      {/* Runs right from the jumper nubs, then up along x=60 to ATmega left side */}
-      <path id="tOledJ" d="M 23,97 H 60 V 107 H 78"
-        fill="none" stroke="#C9913A" strokeWidth="0.9" strokeOpacity="0.4" strokeLinecap="round"
-        strokeDasharray="150" strokeDashoffset="150"
-        style={{animation:'alarmTraceDraw 0.5s ease-out 1.45s forwards'}} />
+      {/* ── 4 TRACES: jumper → ATmega left pins ──
+          Arrivals at x=78 are equidistant 8px apart: y=84, 92, 100, 108.
+          Middle two (GND, SCL) run straight — no deflection needed.
+          Outer two (VCC, SDA) angle 45° toward the middle for 6px of x-travel,
+          landing on the equidistant grid before running straight to the MCU.
+          No trace crosses another. */}
+
+      {/* tVCC: outer-top — angles DOWN 6px at 45°, then straight */}
+      {/* Start (23,78) → corner (29,84) → MCU (78,84) */}
+      <path id="tVCC" d="M 23,78 L 29,84 H 78"
+        fill="none" stroke="#C9913A" strokeWidth="0.85" strokeOpacity="0.4" strokeLinecap="round"
+        strokeDasharray="130" strokeDashoffset="130"
+        style={{animation:'alarmTraceDraw 0.45s ease-out 1.4s forwards'}} />
+
+      {/* tGND: inner — straight across */}
+      {/* Start (23,92) → MCU (78,92) */}
+      <path id="tGND" d="M 23,92 H 78"
+        fill="none" stroke="#C9913A" strokeWidth="0.85" strokeOpacity="0.4" strokeLinecap="round"
+        strokeDasharray="80" strokeDashoffset="80"
+        style={{animation:'alarmTraceDraw 0.35s ease-out 1.5s forwards'}} />
+
+      {/* tSCL: inner — straight across */}
+      {/* Start (23,100) → MCU (78,100) */}
+      <path id="tSCL" d="M 23,100 H 78"
+        fill="none" stroke="#C9913A" strokeWidth="0.85" strokeOpacity="0.4" strokeLinecap="round"
+        strokeDasharray="80" strokeDashoffset="80"
+        style={{animation:'alarmTraceDraw 0.35s ease-out 1.55s forwards'}} />
+
+      {/* tSDA: outer-bottom — angles UP 6px at 45°, then straight */}
+      {/* Start (23,114) → corner (29,108) → MCU (78,108) */}
+      <path id="tSDA" d="M 23,114 L 29,108 H 78"
+        fill="none" stroke="#C9913A" strokeWidth="0.85" strokeOpacity="0.4" strokeLinecap="round"
+        strokeDasharray="130" strokeDashoffset="130"
+        style={{animation:'alarmTraceDraw 0.45s ease-out 1.6s forwards'}} />
 
       {/* T_BTNS: Buttons → ATmega bottom-left (GPIO) */}
       <path id="tBtns" d="M 38,138 V 132 H 78 V 128"
@@ -596,10 +644,22 @@ function AlarmViz() {
         <animate attributeName="opacity" values="0;0.7;0.7;0" keyTimes="0;0.1;0.85;1" dur="2s" begin="4.5s" repeatCount="indefinite"/>
       </circle>
 
-      {/* OLED jumper → ATmega (I2C data — same cadence as tOled above) */}
-      <circle r="1.8" fill="#C9913A" opacity="0">
-        <animateMotion dur="1.3s" begin="3.2s" repeatCount="indefinite"><mpath href="#tOledJ"/></animateMotion>
-        <animate attributeName="opacity" values="0;0.9;0.9;0" keyTimes="0;0.1;0.85;1" dur="1.3s" begin="3.2s" repeatCount="indefinite"/>
+      {/* OLED jumper → ATmega: 4 individual pulses, one per trace */}
+      <circle r="1.6" fill="#C9913A" opacity="0">
+        <animateMotion dur="1.3s" begin="3.1s" repeatCount="indefinite"><mpath href="#tVCC"/></animateMotion>
+        <animate attributeName="opacity" values="0;0.85;0.85;0" keyTimes="0;0.1;0.85;1" dur="1.3s" begin="3.1s" repeatCount="indefinite"/>
+      </circle>
+      <circle r="1.6" fill="#C9913A" opacity="0">
+        <animateMotion dur="1.1s" begin="3.3s" repeatCount="indefinite"><mpath href="#tGND"/></animateMotion>
+        <animate attributeName="opacity" values="0;0.85;0.85;0" keyTimes="0;0.1;0.85;1" dur="1.1s" begin="3.3s" repeatCount="indefinite"/>
+      </circle>
+      <circle r="1.6" fill="#C9913A" opacity="0">
+        <animateMotion dur="1.1s" begin="3.5s" repeatCount="indefinite"><mpath href="#tSCL"/></animateMotion>
+        <animate attributeName="opacity" values="0;0.85;0.85;0" keyTimes="0;0.1;0.85;1" dur="1.1s" begin="3.5s" repeatCount="indefinite"/>
+      </circle>
+      <circle r="1.6" fill="#C9913A" opacity="0">
+        <animateMotion dur="1.3s" begin="3.7s" repeatCount="indefinite"><mpath href="#tSDA"/></animateMotion>
+        <animate attributeName="opacity" values="0;0.85;0.85;0" keyTimes="0;0.1;0.85;1" dur="1.3s" begin="3.7s" repeatCount="indefinite"/>
       </circle>
 
       {/* ATmega heartbeat glow */}
