@@ -869,20 +869,20 @@ const projectsData = [
 
 const servicesData = [
   {
+    title: 'Web & CMS Development',
+    desc: 'Custom websites, portfolios, and e-commerce stores built to perform. From WordPress and WooCommerce to fully bespoke React builds — designed to convert, structured to scale.',
+  },
+  {
     title: 'Full-Stack Web MVP',
     desc: 'From zero to deployed. I build responsive React frontends powered by robust C# .NET or Node.js backends.',
   },
   {
-    title: 'Embedded Firmware & IoT',
-    desc: 'C/C++ firmware development for ESP32, ATmega, and Arduino ecosystems, bridging edge devices to cloud APIs.',
-  },
-  {
-    title: 'Custom PCB Layout',
-    desc: 'Schematic capture and PCB routing using KiCad and EAGLE for specialised hardware prototypes.',
+    title: 'Electronic Design',
+    desc: 'Purpose-built schematic design and PCB layout using KiCad and EAGLE — from concept to manufacturable board for specialised hardware applications.',
   },
   {
     title: 'AI Integration',
-    desc: 'Integrating LLMs (Gemini, Semantic Kernel) safely into business logic without compromising system constraints.',
+    desc: 'Integrating large language models safely and precisely into business logic, enabling intelligent automation without compromising system constraints or reliability.',
   },
 ]
 
