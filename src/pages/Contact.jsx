@@ -116,7 +116,7 @@ function Contact() {
                 Whether you're looking for an engineer to join your team full-time/part time, or you need a freelance developer to help bring a specific digital or embedded project to life, I'm open to discussing how I can add value.
               </p>
               <p className="text-cream/50 text-sm leading-relaxed font-light">
-                I specialize in bridging the gap between business requirements and technical execution — from high-level software architecture down to the hardware layer.
+                I specialize in bridging the gap between business requirements and technical execution, from high-level software architecture down to the hardware layer.
               </p>
             </div>
 
@@ -143,10 +143,10 @@ function Contact() {
 
               {/* Social Links — using standard <a> tags to external sites */}
               <div className="flex gap-6 mt-2">
-                <a href="#" className="text-cream/40 hover:text-gold text-sm tracking-[0.2em] uppercase transition-colors duration-300">
+                <a href="https://www.linkedin.com/in/andrenyathi" target="_blank" rel="noopener noreferrer" className="text-cream/40 hover:text-gold text-sm tracking-[0.2em] uppercase transition-colors duration-300">
                   LinkedIn
                 </a>
-                <a href="#" className="text-cream/40 hover:text-gold text-sm tracking-[0.2em] uppercase transition-colors duration-300">
+                <a href="https://github.com/andreNyathii" target="_blank" rel="noopener noreferrer" className="text-cream/40 hover:text-gold text-sm tracking-[0.2em] uppercase transition-colors duration-300">
                   GitHub
                 </a>
               </div>

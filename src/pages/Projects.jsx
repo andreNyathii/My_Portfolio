@@ -5,8 +5,7 @@ import { motion } from 'framer-motion'
 // ICON DICTIONARY
 // ============================================================
 // Each key maps to a devicon or simpleicons CDN URL.
-// Adding them all here keeps the data section clean and avoids
-// repeating long URLs throughout the file.
+
 const icons = {
   react:      'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg',
   csharp:     'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/csharp/csharp-original.svg',
@@ -870,7 +869,7 @@ const projectsData = [
 const servicesData = [
   {
     title: 'Web & CMS Development',
-    desc: 'Custom websites, portfolios, and e-commerce stores built to perform. From WordPress and WooCommerce to fully bespoke React builds — designed to convert, structured to scale.',
+    desc: 'Custom websites, portfolios, and e-commerce stores built to perform. From WordPress and WooCommerce to fully bespoke React builds, designed to convert and structured to scale.',
   },
   {
     title: 'Full-Stack Web MVP',
@@ -878,7 +877,7 @@ const servicesData = [
   },
   {
     title: 'Electronic Design',
-    desc: 'Purpose-built schematic design and PCB layout using KiCad and EAGLE — from concept to manufacturable board for specialised hardware applications.',
+    desc: 'Purpose-built schematic design and PCB layout using KiCad and EAGLE, from concept to manufacturable board for specialised hardware applications.',
   },
   {
     title: 'AI Integration',
@@ -908,7 +907,7 @@ function Projects() {
             Selected <span className="text-gold">Works.</span>
           </h1>
           <p className="text-cream/40 text-sm mt-6 max-w-lg mx-auto font-light leading-relaxed">
-            A showcase of my engineering journey — spanning low-level embedded hardware, deterministic backend architecture, and modern web interfaces.
+            A showcase of my engineering journey — spanning low-level embedded hardware, robust backend architecture, and modern web interfaces.
           </p>
         </div>
       </section>
@@ -1041,7 +1040,7 @@ function Projects() {
       {/* ======================================================
           PHILANTHROPY & PERSONAL NOTE (GoFundMe)
          ====================================================== */}
-      <section className="py-32 px-8 border-t border-white/5 relative overflow-hidden">
+     {/*  <section className="py-32 px-8 border-t border-white/5 relative overflow-hidden"> 
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-[300px] bg-gold/[0.02] blur-[80px] pointer-events-none" />
 
         <motion.div
@@ -1086,7 +1085,7 @@ function Projects() {
             </div>
           </div>
         </motion.div>
-      </section>
+      </section> */}
 
     </div>
   )
