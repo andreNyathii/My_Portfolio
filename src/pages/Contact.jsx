@@ -115,9 +115,6 @@ function Contact() {
               <p className="text-cream/50 text-sm leading-relaxed font-light">
                 Whether you're looking for an engineer to join your team full-time/part time, or you need a freelance developer to help bring a specific digital or embedded project to life, I'm open to discussing how I can add value.
               </p>
-              <p className="text-cream/50 text-sm leading-relaxed font-light">
-                I specialize in bridging the gap between business requirements and technical execution, from high-level software architecture down to the hardware layer.
-              </p>
             </div>
 
             {/* Direct contact details */}
