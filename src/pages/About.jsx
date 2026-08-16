@@ -54,24 +54,24 @@ const experience = [
 // Rhine-Waal appears twice — Electrical and Electronics Engineering and BSc Electronics.
 const education = [
   {
-    period: '06/2019 - Present',
     institution: 'Rhine Waal University of Applied Sciences',
     location: 'Kleve, Germany',
     degree: 'Electrical and Electronics Engineering',
-    note: 'Expected Graduation - 01.03.2027 · GPA: 2.5',
+    note: 'GPA: 2.5',
     highlights: [
       'Specializations: C, C++, MATLAB, Embedded Systems, Hardware Design, Microelectronic Control Systems, Audio Speech Processing.',
       'Led multidisciplinary engineering teams through full lifecycle project development from requirement definition to functional build.',
     ],
   },
   {
-    period: '09/2015 - 06/2019',
     institution: 'Rhine Waal University of Applied Sciences',
     location: 'Kleve, Germany',
-    degree: 'BSc Electronics',
-    note: 'Transferred focus to complete degree in Electrical and Electronics Engineering',
+    degree: 'Real-Time CNC Machine Monitoring System (Thesis Project)',
+    note: 'Software & Middleware Architecture for Industrial Automation',
     highlights: [
-      'Specializations: Low Power Design, Power Electronics, Digital Electronics Circuits, Signal Transmission, VHDL.',
+      'Developed a CNC machine simulation for a robotic cell, utilizing real operational data to authentically model machine behavior and tool wear.',
+      'Programmed custom middleware using C# and the .NET framework to process and reliably transmit high-frequency machine data.',
+      'Implemented a formal state machine for automated fault detection, analyzing and identifying errors by comparing expected versus actual values.',
     ],
   },
 ]
@@ -191,32 +191,31 @@ function About() {
             <div className="flex flex-col gap-5">
               {/* text-lg leading-relaxed — slightly larger body text with comfortable line height */}
               <p className="text-cream/60 text-lg leading-relaxed font-light">
-                Software Engineer and Embedded & Web Developer with Work and Study experience in Industrial Automation Software, Full-Stack Development, and Object-Oriented Design.
+                As a highly adaptable engineer, I embrace new challenges with a positive attitude. I bring meticulous attention to detail, effective communication, and strong analytical thinking to every project, ensuring that technical delivery aligns with client expectations and business goals.
               </p>
               <p className="text-cream/45 text-base leading-relaxed font-light">
-                Proficient in .NET Framework (.NET Core, WinForms, Web API), SQL database design, React.js, schematic/PCB design (KiCad/EAGLE), and CMS customization (WordPress/PHP).
+                Software Engineer and Embedded & Web Developer with Work and Study experience in Industrial Automation Software, Full-Stack Development, and Object-Oriented Design.
               </p>
             </div>
 
             {/* Right column: secondary statement + quick facts */}
             <div className="flex flex-col gap-5">
               <p className="text-cream/45 text-base leading-relaxed font-light">
-                Hands-on experience with Git, Mercurial (Hg), and continuous integration workflows. Native/Fluent English, Intermediate German (B1 - actively expanding). Excellent communicator capable of bridging business logic between technical development teams and non-technical clients.
+                Proficient in .NET Framework, SQL, React.js, schematic/PCB design, and CMS customization, alongside work experience with Git CLI, Mercurial (Hg), and continuous integration. Strong understanding of modern AI-assisted engineering and autonomous agentic development workflows.
               </p>
 
-              {/* Quick-facts grid — 2 items per row using grid */}
               <div className="grid grid-cols-2 gap-4 mt-2">
                 {[
                   { label: 'Based In',    value: 'Kleve, Germany' },
                   { label: 'Email',       value: 'andremdu48@gmail.com' },
                   { label: 'Languages',   value: 'EN · DE (B1) · ZU' },
-                  { label: 'Graduation',  value: '01.03.2027' },
+                  { label: 'Availability',value: 'Open to Work' },
                 ].map((item) => (
                   // Each fact is a small bordered card.
-                  // key={item.label} — required unique identifier for list-rendered elements.
-                  <div key={item.label} className="flex flex-col gap-1 p-3 border border-white/[0.06] rounded">
-                    <span className="text-[10px] text-cream/25 tracking-[0.3em] uppercase">{item.label}</span>
-                    <span className="text-cream/70 text-sm font-light">{item.value}</span>
+                  // overflow-hidden prevents text from breaking out of the border.
+                  <div key={item.label} className="flex flex-col gap-1 p-3 border border-white/[0.06] rounded overflow-hidden">
+                    <span className="text-[10px] text-cream/25 tracking-[0.3em] uppercase truncate">{item.label}</span>
+                    <span className="text-cream/70 text-xs sm:text-sm font-light truncate" title={item.value}>{item.value}</span>
                   </div>
                 ))}
               </div>
@@ -365,9 +364,11 @@ function About() {
                       {entry.institution} &nbsp;·&nbsp; {entry.location}
                     </p>
                   </div>
-                  <span className="text-cream/20 text-xs tracking-[0.2em] font-light shrink-0">
-                    {entry.period}
-                  </span>
+                  {entry.period && (
+                    <span className="text-cream/20 text-xs tracking-[0.2em] font-light shrink-0">
+                      {entry.period}
+                    </span>
+                  )}
                 </div>
 
                 {/* Italicised note — GPA, transfer note, graduation date */}
