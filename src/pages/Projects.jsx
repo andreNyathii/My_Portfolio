@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import { Helmet } from 'react-helmet-async'
 
 // ============================================================
 // ICON DICTIONARY
@@ -891,6 +892,11 @@ const servicesData = [
 function Projects() {
   return (
     <div className="bg-dark min-h-screen">
+
+      <Helmet>
+        <title>Projects · Mduduzi André Nyathi</title>
+        <meta name="description" content="Engineering projects by Mduduzi André Nyathi, including an agentic workforce scheduler, embedded alarm system, autonomous suitcase, and real-time fleet tracker." />
+      </Helmet>
 
       {/* ======================================================
           HERO SECTION

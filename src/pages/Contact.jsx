@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Helmet } from 'react-helmet-async'
 
 // ============================================================
 // CONTACT PAGE COMPONENT
@@ -72,6 +73,11 @@ function Contact() {
 
   return (
     <div className="bg-dark min-h-screen">
+
+      <Helmet>
+        <title>Contact · Mduduzi André Nyathi</title>
+        <meta name="description" content="Get in touch with Mduduzi André Nyathi for full-time engineering roles, freelance web or embedded projects, or technical collaboration. Based in Kleve, Germany." />
+      </Helmet>
       {/* ======================================================
           HERO SECTION
           Full-width intro matching the About page style.
@@ -115,6 +121,11 @@ function Contact() {
               <p className="text-cream/50 text-sm leading-relaxed font-light">
                 Whether you're looking for an engineer to join your team full-time/part time, or you need a freelance developer to help bring a specific digital or embedded project to life, I'm open to discussing how I can add value.
               </p>
+              {/* Response time promise — a small trust signal that tells the visitor
+                  their message won't disappear into a void. Removes hesitation. */}
+              <p className="text-cream/30 text-xs tracking-wider font-light">
+                I typically respond within one business day.
+              </p>
             </div>
 
             {/* Direct contact details */}
@@ -147,6 +158,15 @@ function Contact() {
                   GitHub
                 </a>
               </div>
+
+              {/* Privacy Policy link — required by GDPR to be accessible from
+                  the point of data collection (i.e. near the contact form). */}
+              <Link
+                to="/privacy"
+                className="text-cream/20 hover:text-cream/40 text-[10px] tracking-[0.25em] uppercase transition-colors duration-300 mt-2"
+              >
+                Privacy Policy
+              </Link>
             </div>
           </div>
 

@@ -1,0 +1,8 @@
+# robots.txt for andrenyathi.com
+# This file tells search engine crawlers which pages they are allowed to index.
+# "User-agent: *" applies to all bots (Googlebot, Bingbot, etc.)
+# "Allow: /" means every page on this site is open for indexing.
+# This is correct for a portfolio — all pages are intentionally public.
+
+User-agent: *
+Allow: /

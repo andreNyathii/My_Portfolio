@@ -1,6 +1,5 @@
-// Link is used here for the CTA button that navigates to /contact.
-// We use Link (not NavLink) because we don't need active-state styling on this page.
 import { Link } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
 
 // ============================================================
 // DATA — defined outside the component so it is created once
@@ -144,6 +143,11 @@ function SectionHeading({ label, title, align = 'left' }) {
 function About() {
   return (
     <div className="bg-dark min-h-screen">
+
+      <Helmet>
+        <title>About · Mduduzi André Nyathi</title>
+        <meta name="description" content="Learn about Mduduzi André Nyathi — his background, skills, work experience in industrial automation and full-stack development, and his education at Rhine Waal University." />
+      </Helmet>
 
       {/* ======================================================
           HERO SECTION

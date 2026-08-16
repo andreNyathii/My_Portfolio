@@ -3,7 +3,36 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Portfolio</title>
+
+    <!-- Primary SEO tags ─────────────────────────────────────────────────
+         <title>    : The clickable blue headline in Google search results.
+                      Also shown in the browser tab and bookmark label.
+         <description>: The 2-line summary beneath the title in Google results.
+                        160 characters max. This is your pitch to a recruiter
+                        scanning search results — make it count.
+    ──────────────────────────────────────────────────────────────────── -->
+    <title>Mduduzi André Nyathi · Software Engineer & Embedded Developer</title>
+    <meta name="description" content="Portfolio of Mduduzi André Nyathi — Software Engineer and Embedded & Web Developer based in Kleve, Germany. Specialising in .NET, React, embedded systems, and industrial automation." />
+
+    <!-- Open Graph tags ───────────────────────────────────────────────────
+         OG tags are read by LinkedIn, WhatsApp, Twitter/X, Facebook, and
+         Slack when someone pastes your URL. Without these, the preview card
+         is blank or shows random page text.
+         og:title       : Bold headline in the preview card.
+         og:description : Body text in the preview card.
+         og:type        : "website" is correct for a portfolio.
+         og:url         : The canonical URL of the page being shared.
+    ──────────────────────────────────────────────────────────────────── -->
+    <meta property="og:title" content="Mduduzi André Nyathi · Software Engineer" />
+    <meta property="og:description" content="Software Engineer and Embedded & Web Developer. Specialising in .NET, React, embedded systems, and industrial automation." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://andrenyathi.com" />
+
+    <!-- Twitter/X card — separate from OG but same concept.
+         "summary_large_image" shows a big image preview if og:image is set. -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Mduduzi André Nyathi · Software Engineer" />
+    <meta name="twitter:description" content="Software Engineer and Embedded & Web Developer based in Kleve, Germany." />
   </head>
   <body>
     <div id="root"></div>

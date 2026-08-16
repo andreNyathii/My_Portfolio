@@ -23,6 +23,7 @@ import { useState, useEffect } from 'react'
 // Unlike NavLink (which tracks active state), Link just navigates.
 // Use NavLink in the Navbar, Link everywhere else.
 import { Link } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
 
 // ============================================================
 // DATA — defined outside the component so it's only created once,
@@ -177,7 +178,14 @@ function Home() {
   // ============================================================
   return (
     // The outer wrapper. bg-dark = our custom #0D0D0D from tailwind.config.
-    <div className="bg-dark">
+    <div className="bg-dark min-h-screen">
+
+      {/* Helmet injects this page's title and meta into the real <head> tag.
+          When the user navigates away, these are replaced by the next page's Helmet. */}
+      <Helmet>
+        <title>Mduduzi André Nyathi · Software Engineer & Embedded Developer</title>
+        <meta name="description" content="Portfolio of Mduduzi André Nyathi — Software Engineer and Embedded & Web Developer based in Kleve, Germany. Specialising in .NET, React, and embedded systems." />
+      </Helmet>
 
       {/* ======================================================= */}
       {/* 1. HERO SECTION                                          */}
