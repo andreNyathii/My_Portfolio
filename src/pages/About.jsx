@@ -413,12 +413,15 @@ function About() {
             <div className="flex flex-col gap-6">
               {/* blockquote — semantic HTML element for quoted content */}
               <blockquote className="border-l-2 border-gold/30 pl-6">
-                <p className="font-italiana text-2xl text-cream/70 leading-relaxed tracking-[0.03em] italic">
-                  "Bridging business logic between technical development teams and non-technical clients."
+                <p className="font-italiana text-lg text-cream/70 leading-relaxed tracking-[0.03em] italic">
+                  "Strength in numbers, the widest path is formed by the biggest herd."
                 </p>
+                <footer className="text-cream/30 text-xs tracking-[0.15em] uppercase mt-3">
+                  — African Proverb
+                </footer>
               </blockquote>
-              <p className="text-cream/35 text-sm leading-relaxed font-light pl-6">
-                Work and study experience in Industrial Automation Software, Full-Stack Development, and Object-Oriented Design. Outside of work, active in sports, music, and continuous learning.
+              <p className="text-cream/45 text-sm leading-relaxed font-light pl-6">
+                As a Zimbabwean, community and social awareness are core to who I am. I naturally gravitate towards collaborative environments, both in my personal life and professional work. I value honesty, transparency, and cohesion, driven by the belief that the best results come from working together.
               </p>
             </div>
 
