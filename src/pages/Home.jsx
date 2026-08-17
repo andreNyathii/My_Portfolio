@@ -467,7 +467,7 @@ function Home() {
 
           <p className="text-cream/30 text-sm leading-relaxed max-w-sm">
             Available for freelance projects, embedded systems contracts,
-            and full-time engineering roles. Based in Kleve, Germany —
+            and full-time engineering roles. Based in Kleve, Germany ,
             open to remote and relocation.
           </p>
 
