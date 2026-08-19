@@ -945,7 +945,7 @@ const projectsData = [
 const servicesData = [
   {
     title: 'Web & CMS Development',
-    desc: 'Custom websites, portfolios, and e-commerce stores built to perform. From WordPress and WooCommerce to fully bespoke React builds, designed to convert and structured to scale.',
+    desc: 'Custom websites, portfolios, and e-commerce stores built to perform. From initial interviews to final launch, I help translate your vision into a tailored digital experience, complete with easy content management.',
   },
   {
     title: 'Full-Stack Web MVP',
@@ -953,11 +953,11 @@ const servicesData = [
   },
   {
     title: 'Electronic Design',
-    desc: 'Purpose-built schematic design and PCB layout using KiCad and EAGLE, from concept to manufacturable board for specialised hardware applications.',
+    desc: 'Purpose-built schematic design and PCB layout, from concept to manufacturable board for specialised hardware applications.',
   },
   {
     title: 'AI Integration',
-    desc: 'Integrating large language models safely and precisely into business logic, enabling intelligent automation without compromising system constraints or reliability.',
+    desc: 'Integrating LLMs safely and precisely into business logic, enabling agentic automation without compromising system constraints or reliability.',
   },
 ]
 
