@@ -23,6 +23,9 @@ const icons = {
   kicad:      'https://cdn.simpleicons.org/kicad/C9913A', // KiCad has its own simpleicon, using our gold
   github:     'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg',
   tailwind:   'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg',
+  wordpress:  'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/wordpress/wordpress-plain.svg',
+  css3:       'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg',
+  php:        'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg',
 }
 
 // ============================================================
@@ -799,6 +802,63 @@ function FleetViz() {
   )
 }
 
+// --- ECommerceViz: E-Commerce & Gallery flow ---
+// Represents an e-commerce platform with a user browsing,
+// selecting an item, and completing a purchase (turns green).
+function ECommerceViz() {
+  return (
+    <svg viewBox="0 0 240 160" className="w-full h-auto p-4 opacity-90" fill="none">
+      {/* Wireframe browser window */}
+      <rect x="20" y="20" width="200" height="120" rx="4" stroke="#F5F0E8" strokeOpacity="0.1" strokeWidth="1" />
+      <line x1="20" y1="35" x2="220" y2="35" stroke="#F5F0E8" strokeOpacity="0.1" strokeWidth="1" />
+      
+      {/* Header UI elements */}
+      <circle cx="30" cy="27" r="1.5" fill="#F5F0E8" fillOpacity="0.2" />
+      <circle cx="36" cy="27" r="1.5" fill="#F5F0E8" fillOpacity="0.2" />
+      <circle cx="42" cy="27" r="1.5" fill="#F5F0E8" fillOpacity="0.2" />
+      
+      {/* Cart Icon (static) */}
+      <path d="M192 24 L197 24 L199 30 L207 30 L205 32 L199 32 Z" fill="#C9913A" fillOpacity="0.4" />
+      
+      {/* Animated Cart Dot (shows item added) */}
+      <circle cx="207" cy="24" r="2.5" fill="#4ade80">
+        <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.55;0.6;0.9;1" dur="5s" repeatCount="indefinite" />
+      </circle>
+
+      {/* Gallery Items */}
+      <rect x="35" y="50" width="40" height="40" rx="2" stroke="#C9913A" strokeOpacity="0.2" strokeWidth="1" />
+      
+      {/* Item 2 - Animated Purchase */}
+      <g>
+        {/* Glow effect when purchased */}
+        <rect x="100" y="50" width="40" height="40" rx="2" fill="#4ade80">
+          <animate attributeName="fill-opacity" values="0;0;0.08;0.08;0" keyTimes="0;0.55;0.6;0.9;1" dur="5s" repeatCount="indefinite" />
+        </rect>
+        <rect x="100" y="50" width="40" height="40" rx="2" stroke="#C9913A" strokeWidth="1.2">
+          <animate attributeName="stroke" values="#C9913A;#C9913A;#4ade80;#4ade80;#C9913A" keyTimes="0;0.55;0.6;0.9;1" dur="5s" repeatCount="indefinite" />
+        </rect>
+        {/* Purchased Checkmark */}
+        <path d="M 112 70 L 118 76 L 128 64" stroke="#4ade80" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="30" strokeDashoffset="30">
+          <animate attributeName="stroke-dashoffset" values="30;30;0;0;30" keyTimes="0;0.55;0.6;0.9;1" dur="5s" repeatCount="indefinite" />
+        </path>
+      </g>
+
+      <rect x="165" y="50" width="40" height="40" rx="2" stroke="#C9913A" strokeOpacity="0.2" strokeWidth="1" />
+
+      {/* Item 4, 5, 6 (bottom row) */}
+      <rect x="35" y="105" width="40" height="20" rx="2" stroke="#C9913A" strokeOpacity="0.1" strokeWidth="1" />
+      <rect x="100" y="105" width="40" height="20" rx="2" stroke="#C9913A" strokeOpacity="0.1" strokeWidth="1" />
+      <rect x="165" y="105" width="40" height="20" rx="2" stroke="#C9913A" strokeOpacity="0.1" strokeWidth="1" />
+
+      {/* Animated Cursor */}
+      <g>
+        <animateTransform attributeName="transform" type="translate" values="50 130; 120 70; 120 70; 205 28; 50 130" keyTimes="0; 0.25; 0.55; 0.7; 1" dur="5s" repeatCount="indefinite" />
+        <path d="M0,0 L0,12 L3,9 L7,13 L8,12 L5,8 L10,8 Z" fill="#F5F0E8" opacity="0.9" />
+      </g>
+    </svg>
+  )
+}
+
 // ============================================================
 // PROJECT DATA
 // ============================================================
@@ -838,6 +898,20 @@ const projectsData = [
     Viz: AlarmViz,
   },
   {
+    title: 'NicolinesArt.com',
+    subtitle: 'Custom E-Commerce & Gallery',
+    type: 'Client Project · Web Development',
+    description:
+      'Developed a custom e-commerce and gallery platform for an independent artist. Conducted client interviews to gather requirements and translate a creative vision into technical architecture. Built on WordPress with extensively tailored CSS, PHP and WooCommerce integration to deliver a seamless browsing and purchasing experience, closely matching the client\'s vision.',
+    tech: [
+      { name: 'WordPress', url: icons.wordpress },
+      { name: 'PHP',       url: icons.php },
+      { name: 'CSS3',      url: icons.css3 },
+    ],
+    Viz: ECommerceViz,
+    link: 'https://nicolinesart.com'
+  },
+  {
     title: 'Autonomous Suitcase',
     subtitle: 'Self-Following Luggage System',
     type: 'Hardware Prototyping',
@@ -859,6 +933,7 @@ const projectsData = [
       'Architected high-level system diagrams defining telemetry data flow from embedded vehicular units to web dashboards. Co-developed the web application utilising React.js, integrating REST APIs for real-time asset tracking and location visualisation.',
     tech: [
       { name: 'React',  url: icons.react },
+      { name: 'Tailwind', url: icons.tailwind },
       { name: 'Python', url: icons.python },
       { name: 'JS',     url: icons.javascript },
       { name: 'Git',    url: icons.git },
@@ -961,6 +1036,15 @@ function Projects() {
                   <p className="text-cream/60 text-sm leading-relaxed font-light">
                     {project.description}
                   </p>
+
+                  {/* Optional Visit Site button for live projects */}
+                  {project.link && (
+                    <div className="mt-2">
+                      <a href={project.link} target="_blank" rel="noopener noreferrer" className="inline-block px-6 py-2.5 bg-gold/[0.04] border border-gold/20 text-gold font-italiana text-xs tracking-[0.2em] uppercase rounded hover:bg-gold/[0.12] hover:border-gold/40 transition-all duration-300">
+                        Visit Website
+                      </a>
+                    </div>
+                  )}
 
                   {/* ---- SHINE-ON-HOVER TECH ICONS ---- */}
                   {/* Icons sit in grayscale at low opacity by default.              */}
