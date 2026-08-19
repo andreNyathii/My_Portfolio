@@ -59,8 +59,8 @@ const techStack = [
     logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/dotnetcore/dotnetcore-original.svg',
   },
   {
-    name: 'C++',
-    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg',
+    name: 'C',
+    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/c/c-original.svg',
   },
   {
     name: 'Python',
@@ -70,14 +70,7 @@ const techStack = [
     name: 'KiCad',
     logo: 'https://cdn.simpleicons.org/kicad/white',
   },
-  {
-    name: 'EAGLE',
-    logo: 'https://cdn.simpleicons.org/autodesk/white', // EAGLE is an Autodesk product
-  },
-  {
-    name: 'Arduino',
-    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/arduino/arduino-original.svg',
-  },
+
   {
     name: 'PostgreSQL',
     logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg',
