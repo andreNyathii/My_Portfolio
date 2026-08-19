@@ -1,8 +1,10 @@
+import { useState, useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
 import Logo from '../assets/Logo.jpg'
 
-// Our nav pages as an array of objects.
-// label = display text | path = URL it navigates to
+// ============================================================
+// NAV LINKS DATA
+// ============================================================
 const navLinks = [
   { label: 'Home',     path: '/' },
   { label: 'About',    path: '/about' },
@@ -10,157 +12,208 @@ const navLinks = [
   { label: 'Contact',  path: '/contact' },
 ]
 
+// ============================================================
+// NAVBAR COMPONENT
+// ============================================================
+// This component now handles two layouts:
+//   Desktop (md and above): the original centred glassmorphism bar.
+//   Mobile (below md):      a hamburger button that opens a full-screen overlay menu.
+//
+// The overlay approach (vs. a dropdown) is preferred on mobile because:
+//   - It gives the menu items room to breathe — large tap targets, comfortable spacing.
+//   - It feels intentional and designed, not like an afterthought.
+//   - It locks body scroll, preventing accidental page movement while navigating.
+// ============================================================
 function Navbar() {
+
+  // isOpen tracks whether the mobile overlay menu is visible.
+  // false = closed (default). true = open.
+  const [isOpen, setIsOpen] = useState(false)
+
+  // When the menu opens, lock the body scroll so the page doesn't
+  // scroll beneath the overlay. The cleanup function restores scroll
+  // when the component unmounts or isOpen changes back to false.
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => { document.body.style.overflow = '' }
+  }, [isOpen])
+
+  // close() is passed to all nav links in the overlay so clicking
+  // any link also dismisses the menu.
+  const close = () => setIsOpen(false)
+
   return (
-    // === THE NAV BAR CONTAINER ===
-    // fixed top-0 left-0  → locks it to the top of the viewport, doesn't scroll away
-    // w-full              → stretches full screen width
-    // z-50                → z-index 50 → sits visually above all page content
-    // bg-dark/75          → our custom dark color (#0D0D0D) at 75% opacity
-    //                       the remaining 25% lets the page content slightly bleed through
-    // backdrop-blur-md    → blurs whatever is BEHIND the navbar (the frosted glass look)
-    //                       "md" = medium blur. Options: sm, md, lg, xl
-    // border-b border-white/5 → a hairline bottom border in white at 5% opacity
-    //                           subtle separator between navbar and page content
-    <nav className="fixed top-0 left-0 w-full z-50 bg-dark/75 backdrop-blur-md border-b border-white/5">
+    // React fragments (<> </>) let us return multiple top-level elements.
+    // We need two: the fixed navbar bar and the overlay panel.
+    <>
 
-      {/* === INNER ROW === */}
-      {/* relative         → makes this div a "positioning anchor" */}
-      {/*                    Children with position:absolute will be placed relative to THIS div */}
-      {/* px-10 py-5       → padding: 2.5rem left/right, 1.25rem top/bottom */}
-      {/*                    py-5 gives the navbar more vertical presence/height */}
-      {/* flex items-center → lays children in a horizontal row, vertically centered */}
-      <div className="relative px-10 py-5 flex items-center">
+      {/* ============================================================
+          THE FIXED NAVIGATION BAR (always visible at top)
+         ============================================================ */}
+      <nav className="fixed top-0 left-0 w-full z-50 bg-dark/75 backdrop-blur-md border-b border-white/5">
 
-        {/* === LOGO (left-anchored) === */}
-        {/* NavLink to="/"  → clicking logo goes home, no page reload */}
-        {/* flex items-center → centers the image vertically within the link */}
-        <NavLink to="/" className="hidden md:flex items-center">
+        {/* justify-between on mobile (logo left, burger right).
+            On md+ we override to justify-start since the links
+            are absolutely centred and don't need space-between. */}
+        <div className="relative px-8 py-5 flex items-center justify-between md:justify-start">
 
-          {/* === LOGO CROPPING WRAPPER === */}
-          {/* The Logo.jpg file has a cream/white border baked INTO the image itself. */}
-          {/* We can't remove it with CSS border:none — it's pixel data in the file. */}
-          {/* The solution: create a "viewport window" div that's slightly smaller */}
-          {/* than the image, then zoom the image so its edges (with the white border) */}
-          {/* get pushed outside the window. overflow-hidden clips them off. */}
-          {/*                                                                          */}
-          {/* overflow-hidden → hides anything that extends beyond this div's edges   */}
-          {/* h-9             → height: 2.25rem (36px) — slimmer for an elegant bar   */}
-          {/* w-20            → width: 5rem (80px) — the clipping window width         */}
-          {/* rounded-sm      → very slight rounding on the logo clip box              */}
-          <div className="overflow-hidden h-9 w-20 rounded-sm">
-            {/* scale-[1.18] → zooms 118%, pushing ALL four white border edges outside */}
-            {/*   scale-110 (10%) wasn't enough — the right border was still showing.  */}
-            {/*   scale-[1.18] uses Tailwind's arbitrary value syntax: scale-[VALUE]   */}
-            {/*   Arbitrary values let you use ANY number, not just preset ones.        */}
-            {/*   Any Tailwind class can take an arbitrary value using square brackets: */}
-            {/*   w-[237px], text-[13px], bg-[#ff0000], etc.                           */}
-            {/* object-cover → fills the container, crops from edges as needed         */}
-            {/* w-full h-full → stretches image to fill its parent completely          */}
-            {/* transition-transform duration-300 → smoothly animates scale changes    */}
-            {/* hover:scale-[1.22] → zooms slightly more on hover (subtle interaction) */}
-            <img
-              src={Logo}
-              alt="André Nyathi Logo"
-              className="w-full h-full object-cover scale-[1.18] hover:scale-[1.22] transition-transform duration-300"
-            />
-          </div>
-        </NavLink>
+          {/* === LOGO ===
+              Visible on all screen sizes (removed `hidden md:flex`).
+              On mobile it anchors the left side of the navbar bar. */}
+          <NavLink to="/" onClick={close} className="flex items-center">
+            {/* The overflow-hidden wrapper clips the white border baked into
+                the logo image. scale-[1.18] zooms past the border edges. */}
+            <div className="overflow-hidden h-9 w-20 rounded-sm">
+              <img
+                src={Logo}
+                alt="André Nyathi Logo"
+                className="w-full h-full object-cover scale-[1.18] hover:scale-[1.22] transition-transform duration-300"
+              />
+            </div>
+          </NavLink>
 
-        {/* === NAV LINKS — Perfectly Centered === */}
-        {/* This uses the absolute centering trick: */}
-        {/*   absolute          → removes from normal flow, positioned vs parent div  */}
-        {/*   left-1/2          → moves the LEFT EDGE of this element to the 50% mark */}
-        {/*   -translate-x-1/2  → shifts it back LEFT by 50% of its OWN width        */}
-        {/*   Combined: the element's center = the parent's center. Always.           */}
-        {/*   top-1/2 -translate-y-1/2 → same trick on the vertical axis             */}
-        {/*   flex gap-1        → row layout, 0.25rem gap between each item           */}
-        <ul className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex gap-1 list-none">
+          {/* === DESKTOP NAV LINKS ===
+              hidden on mobile (md:flex shows them at 768px+).
+              Absolutely centred using the left-1/2 -translate-x-1/2 trick. */}
+          <ul className="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 gap-1 list-none">
+            {navLinks.map((link) => (
+              <li key={link.path}>
+                <NavLink
+                  to={link.path}
+                  end={link.path === '/'}
+                  className={({ isActive }) =>
+                    [
+                      'font-italiana text-lg tracking-[0.2em] uppercase px-5 py-2 rounded transition-all duration-300',
+                      isActive
+                        ? 'text-gold bg-gold/[0.06] border border-gold/[0.1]'
+                        : 'text-cream/40 hover:text-cream/80 hover:bg-white/[0.04] border border-transparent',
+                    ].join(' ')
+                  }
+                >
+                  {link.label}
+                </NavLink>
+              </li>
+            ))}
+          </ul>
 
-          {/* .map() loops over navLinks. For each object in the array, it returns JSX. */}
-          {/* The (link) parameter is the current loop item: { label, path }           */}
-          {/* key={link.path} → React's required unique ID per list item               */}
-          {navLinks.map((link) => (
-            <li key={link.path}>
-              <NavLink
-                to={link.path}
-                // end → only relevant on the "/" home link.
-                // Without it: since EVERY url starts with "/", the Home link
-                // would ALWAYS be considered active, even on /about or /projects.
-                // end={true} means: only match if the url is EXACTLY "/", nothing more.
-                // end={link.path === '/'} evaluates the === comparison and passes the result:
-                //   "/" === "/" → true for home link
-                //   "/about" === "/" → false for other links
-                end={link.path === '/'}
+          {/* === HAMBURGER BUTTON (mobile only) ===
+              md:hidden = only renders below 768px.
+              Three lines of different widths (6 / 4 / 6) gives it a
+              refined look vs. three identical bars.
+              aria-label is required for screen readers and accessibility. */}
+          <button
+            onClick={() => setIsOpen(true)}
+            className="md:hidden flex flex-col gap-[6px] p-2 group"
+            aria-label="Open navigation menu"
+          >
+            <span className="block w-6 h-px bg-cream/50 group-hover:bg-gold transition-colors duration-300" />
+            <span className="block w-4 h-px bg-cream/50 group-hover:bg-gold transition-colors duration-300 ml-auto" />
+            <span className="block w-6 h-px bg-cream/50 group-hover:bg-gold transition-colors duration-300" />
+          </button>
 
-                // className on NavLink can be a function.
-                // React Router calls it with an object { isActive }.
-                // isActive is a boolean: true if this link's path = current URL.
-                // We use it to conditionally apply different styles.
-                className={({ isActive }) =>
-                  [
-                    // --- Shared base styles (always applied) ---
+        </div>
+      </nav>
 
-                    // font-italiana → our custom font registered in tailwind.config.js
-                    // This maps to font-family: 'Italiana', serif
-                    'font-italiana',
+      {/* ============================================================
+          MOBILE FULL-SCREEN OVERLAY MENU
+          z-[60] — sits above the navbar (z-50) so it covers everything.
+          opacity + pointer-events are transitioned together to create a
+          smooth fade-in / fade-out. When closed, pointer-events-none
+          ensures nothing inside the hidden overlay is accidentally tappable.
+         ============================================================ */}
+      <div
+        className={[
+          'fixed inset-0 z-[60] bg-dark flex flex-col md:hidden',
+          'transition-opacity duration-300',
+          isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none',
+        ].join(' ')}
+      >
 
-                    // text-lg → font-size: 1.125rem (18px). Bigger navbar = slightly bigger text.
-                    'text-lg',
+        {/* --- TOP BAR inside overlay: logo + close button --- */}
+        <div className="flex items-center justify-between px-8 py-5 border-b border-white/5">
 
-                    // tracking-[0.2em] → letter-spacing: 0.2em (wider than normal tracking-widest)
-                    // Arbitrary value because Tailwind's preset tracking-widest = 0.1em,
-                    // but Italiana needs more breathing room to look elegant
-                    'tracking-[0.2em]',
+          {/* Logo inside overlay — clicking it navigates home AND closes menu */}
+          <NavLink to="/" onClick={close} className="flex items-center">
+            <div className="overflow-hidden h-9 w-20 rounded-sm">
+              <img
+                src={Logo}
+                alt="André Nyathi Logo"
+                className="w-full h-full object-cover scale-[1.18]"
+              />
+            </div>
+          </NavLink>
 
-                    // uppercase → transforms text to ALL CAPS (HOME, ABOUT, etc.)
-                    'uppercase',
+          {/* Close (X) button — SVG drawn inline for zero dependency */}
+          <button
+            onClick={close}
+            className="p-2 text-cream/40 hover:text-gold transition-colors duration-300"
+            aria-label="Close navigation menu"
+          >
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <line x1="1" y1="1" x2="17" y2="17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+              <line x1="17" y1="1" x2="1"  y2="17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+          </button>
+        </div>
 
-                    // px-5 py-2 → padding inside the box: 1.25rem horizontal, 0.5rem vertical
-                    // More padding = bigger box (as you requested)
-                    'px-5 py-2',
-
-                    // rounded → border-radius: 0.25rem. More rounded than rounded-sm.
-                    // Options from least to most round: none < sm < DEFAULT < md < lg < xl < full
-                    'rounded',
-
-                    // transition-all → animates ALL changing CSS properties simultaneously
-                    // duration-300 → the animation takes 300ms
-                    'transition-all duration-300',
-
-                    // --- Conditional styles based on isActive ---
-                    isActive
-                      // ACTIVE STATE — the currently visited page
-                      // text-gold         → our custom gold color (#C9913A) from tailwind.config
-                      // bg-gold/[0.06]      → gold background at only 6% opacity (barely a tint)
-                      // border              → 1px solid border on all four sides
-                      // border-gold/[0.1]  → gold border at just 10% opacity — whisper-thin
-                      //                      This is the key change: /25 was too assertive,
-                      //                      /[0.1] makes it feel like a ghost outline, very refined
-                      ? 'text-gold bg-gold/[0.06] border border-gold/[0.1]'
-
-                      // INACTIVE STATE — all other links not currently visited
-                      // text-cream/40       → cream at 40% opacity (dimmer than before — more elegant)
-                      // hover:text-cream/80 → on hover, brightens to 80% opacity
-                      // hover:bg-white/[0.04] → barely visible white tint on hover
-                      // border border-transparent → invisible border, same 1px thickness as active
-                      //   Why? Without this, inactive links would "jump" by 1px when
-                      //   they become active and gain a border. This prevents that layout shift.
-                      : 'text-cream/40 hover:text-cream/80 hover:bg-white/[0.04] border border-transparent',
-                  ].join(' ')
-                  // .join(' ') → turns the array into a single space-separated string
-                  // e.g. ['font-italiana', 'text-base', 'px-5'].join(' ')
-                  // → 'font-italiana text-base px-5'
-                }
-              >
-                {link.label}
-              </NavLink>
-            </li>
+        {/* --- NAVIGATION LINKS (vertical, centred in the remaining space) ---
+            flex-1 makes this section expand to fill all space between the top
+            bar and the footer strip below, keeping the links naturally centred. */}
+        <div className="flex-1 flex flex-col items-center justify-center gap-1">
+          {navLinks.map((link, i) => (
+            <NavLink
+              key={link.path}
+              to={link.path}
+              end={link.path === '/'}
+              onClick={close}
+              // Each link staggers its fade-in when the menu opens.
+              // style transitionDelay applies a per-item delay (0ms, 60ms, 120ms, 180ms).
+              // When closing (isOpen false), delay is 0 so all fade out together.
+              style={{ transitionDelay: isOpen ? `${i * 60}ms` : '0ms' }}
+              className={({ isActive }) =>
+                [
+                  'font-italiana text-5xl tracking-[0.06em] uppercase py-4 px-8 rounded',
+                  'transition-all duration-300',
+                  isActive
+                    ? 'text-gold'
+                    : 'text-cream/40 hover:text-cream/90',
+                ].join(' ')
+              }
+            >
+              {link.label}
+            </NavLink>
           ))}
-        </ul>
+        </div>
+
+        {/* --- FOOTER STRIP inside overlay: social links ---
+            Anchored to the bottom of the overlay. Gives the user
+            quick access to LinkedIn and GitHub without needing to navigate away. */}
+        <div className="px-8 py-8 border-t border-white/5 flex gap-8 justify-center">
+          <a
+            href="https://www.linkedin.com/in/andrenyathi"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-cream/25 hover:text-gold text-[10px] tracking-[0.3em] uppercase transition-colors duration-300"
+          >
+            LinkedIn
+          </a>
+          <a
+            href="https://github.com/andreNyathii"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-cream/25 hover:text-gold text-[10px] tracking-[0.3em] uppercase transition-colors duration-300"
+          >
+            GitHub
+          </a>
+        </div>
 
       </div>
-    </nav>
+
+    </>
   )
 }
 

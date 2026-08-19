@@ -74,3 +74,16 @@ Use arbitrary values (`/[0.07]`) when Tailwind preset steps (5, 10, 25...) are t
 This project is built with Google Antigravity (Gemini / Claude) as an active pair-programming tool.
 The developer is learning React, Tailwind, and modern web patterns through the build process.
 All agent output must prioritise comprehension alongside implementation.
+
+---
+
+## Maintenance Notes
+
+### Hardcoded Contact Email
+The email address `andremdu48@gmail.com` is currently hardcoded in **three places**:
+1. `src/pages/Contact.jsx` — the FormSubmit fetch endpoint (`/ajax/andremdu48@gmail.com`)
+2. `src/pages/Contact.jsx` — the fallback error message shown to users
+3. `src/pages/PrivacyPolicy.jsx` — the data controller contact address in the policy body
+
+**If the contact email ever changes**, all three locations must be updated manually.
+Future improvement: extract this into a single constant (e.g. `src/config.js`) and import it everywhere.

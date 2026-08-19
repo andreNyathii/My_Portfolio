@@ -101,12 +101,12 @@ const featuredProjects = [
     type: 'Freelance',
   },
   {
-    title: 'Autonomous Suitcase',
-    subtitle: 'Self-Following Luggage System',
+    title: 'NicolinesArt.com',
+    subtitle: 'Custom E-Commerce & Gallery',
     description:
-      'Led an engineering team to design and prototype a hands-free autonomous suitcase with active user-following, sensor-based obstacle avoidance, and embedded navigation.',
-    tags: ['C/C++', 'Arduino', 'Embedded Systems', 'Sensor Arrays'],
-    type: 'Rhine-Waal University',
+      'Developed a custom e-commerce and gallery platform for an independent artist. Conducted client interviews to translate a creative vision into a tailored WordPress and WooCommerce build.',
+    tags: ['WordPress', 'PHP', 'CSS3', 'WooCommerce', 'Client Project'],
+    type: 'Client Project',
   },
   {
     title: 'Fleet Tracker',
@@ -460,7 +460,7 @@ function Home() {
 
           <p className="text-cream/30 text-sm leading-relaxed max-w-sm">
             Available for freelance projects, embedded systems contracts,
-            and full-time engineering roles. Based in Kleve, Germany ,
+            and full-time engineering roles. Based in Kleve, Germany,
             open to remote and relocation.
           </p>
 

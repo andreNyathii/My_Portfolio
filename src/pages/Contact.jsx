@@ -242,7 +242,7 @@ function Contact() {
               )}
               {submitStatus === 'error' && (
                 <div className="text-red-400 text-sm tracking-wider font-light">
-                  Activation required or error occurred. Check console or your email.
+                  Something went wrong. Please email me directly at andremdu48@gmail.com.
                 </div>
               )}
 

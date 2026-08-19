@@ -11,7 +11,7 @@ import { Helmet } from 'react-helmet-async'
 // Each entry maps cleanly to a card in the timeline section.
 const experience = [
   {
-    period: '09/2025 - 05/2026',
+    period: '2025 – 2026',
     company: 'Halter Automation',
     location: 'Issum, Germany',
     role: 'Software Engineer',
@@ -24,7 +24,7 @@ const experience = [
     stack: ['C#', 'Python', 'ASP.NET', 'MercurialHg', 'WinForms', 'SQL', 'Node.js', 'UI/UX Design', 'Integration Testing'],
   },
   {
-    period: '04/2023 - Present',
+    period: '2023 – Present',
     company: 'Freelance',
     location: 'Kleve, Germany',
     role: 'Freelance Web Developer',
@@ -36,7 +36,7 @@ const experience = [
     stack: ['React.js', 'JavaScript', 'HTML5/CSS3', 'PHP', 'WordPress', 'REST API Design', 'Client Communication'],
   },
   {
-    period: '06/2021 - 01/2022',
+    period: '2021 – 2022',
     company: 'Petesso GMBH',
     location: 'Dortmund, Germany',
     role: 'Software Development Intern',
