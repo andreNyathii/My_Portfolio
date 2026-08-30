@@ -55,32 +55,29 @@
 @tailwind components;
 @tailwind utilities;
 
-/*
- * Global Base Styles
- *
- * Applied to the <body> element. These are the only plain CSS rules in the
- * project — everything else is Tailwind utilities in JSX files.
- *
- * These properties are set here rather than on a wrapper div because they
- * need to apply to the entire document, not just the React root.
- */
-body {
-  /* Background: the deepest dark in the palette — near-black, not pure black.
-     Pure black (#000) often reads as harsh or flat. #0D0D0D has warmth. */
-  background-color: #0D0D0D;
+@layer base {
+  :root {
+    /* Default Dark Mode Values */
+    --color-cream: 245 240 232; /* #F5F0E8 */
+    --color-dark: 13 13 13;     /* #0D0D0D */
+    --color-dark-2: 26 26 26;   /* #1A1A1A */
+    --color-white: 255 255 255; /* #FFFFFF */
+  }
 
-  /* Default text: cream instead of white.
-     Off-white text on near-black reduces eye strain compared to #fff on #000. */
-  color: #F5F0E8;
+  .light {
+    /* Light Mode Values */
+    --color-cream: 13 13 13;    /* Text becomes dark */
+    --color-dark: 245 240 232;  /* Background becomes cream */
+    --color-dark-2: 232 224 212;/* Secondary background becomes darker cream */
+    --color-white: 0 0 0;       /* Borders (white/5) become black/5 */
+  }
 
-  /* Fallback font stack for body text.
-     'Inter' is the primary — loaded via @import above.
-     sans-serif is the browser's generic fallback if Inter fails to load. */
-  font-family: 'Inter', sans-serif;
-
-  /* -webkit-font-smoothing: antialiased
-     Applies subpixel antialiasing to text on macOS/iOS WebKit browsers.
-     Makes fonts appear thinner and crisper on high-DPI screens.
-     Without this, text can look slightly blurry or bold on Retina displays. */
-  -webkit-font-smoothing: antialiased;
+  body {
+    background-color: rgb(var(--color-dark));
+    color: rgb(var(--color-cream));
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    /* Smoothly animate background and text color changes when toggling themes */
+    transition: background-color 0.4s ease, color 0.4s ease;
+  }
 }

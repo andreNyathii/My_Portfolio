@@ -7,6 +7,7 @@ import { Suspense, lazy } from 'react'
 // Our components & pages
 import Navbar from './components/Navbar'
 import MobileCTA from './components/MobileCTA'
+import ScrollToTop from './components/ScrollToTop'
 
 // Code splitting: dynamically import pages only when their route is accessed.
 // This splits the single large JavaScript bundle into smaller chunks,
@@ -32,6 +33,10 @@ function App() {
     // BrowserRouter wraps everything — it's what gives our app
     // awareness of the browser's URL bar
     <BrowserRouter>
+
+      {/* ScrollToTop watches the URL and jumps the page to position 0,0
+          on every navigation. It renders nothing — pure side-effect. */}
+      <ScrollToTop />
 
       {/* Navbar is OUTSIDE <Routes> — this means it renders on EVERY page */}
       <Navbar />

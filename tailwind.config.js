@@ -28,19 +28,17 @@ export default {
     extend: {
 
       // Custom colour tokens.
-      // Once defined here, these become usable Tailwind classes:
-      //   bg-gold, text-cream, border-dark, bg-dark-2, etc.
-      // Opacity variants work automatically:
-      //   text-cream/50, bg-gold/10, border-gold/[0.07]
+      // We use CSS variables here (defined in index.css) to support light/dark mode.
+      // By mapping 'dark' and 'cream' to variables, we can flip the palette 
+      // globally without needing to rewrite every single className in the JSX.
       colors: {
-        gold:       "#C9913A",   // Primary accent — active states, highlights, CTA
-        "gold-light": "#E0B060", // Lighter gold — hover states
-        cream:      "#F5F0E8",   // Primary text colour
-        dark:       "#0D0D0D",   // Page background
-        "dark-2":   "#1A1A1A",   // Secondary background — cards, sidebars
+        gold:       "#C9913A",
+        "gold-light": "#E0B060",
+        cream:      "rgb(var(--color-cream) / <alpha-value>)",
+        dark:       "rgb(var(--color-dark) / <alpha-value>)",
+        "dark-2":   "rgb(var(--color-dark-2) / <alpha-value>)",
+        white:      "rgb(var(--color-white) / <alpha-value>)",
       },
-
-      // Custom font family tokens.
       // These map a short class name to a full font stack.
       // font-italiana  → font-family: 'Italiana', serif
       // font-sans      → font-family: 'Inter', sans-serif  (overrides Tailwind's default sans)
