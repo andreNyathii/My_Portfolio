@@ -5,6 +5,24 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.4.0] — 2026-08-30
+
+### Added
+- **Production Deployment Workflow** — GitHub Actions automated build and deployment pipeline to GitHub Pages with SPA routing fallback.
+- **Custom Domain Configuration** — added `CNAME` for `andrenyathi.com` and DNS routing via Cloudflare proxy.
+- **Route-Level Code Splitting** — lazy loading via `React.lazy` and `Suspense` with custom loader, cutting initial bundle size in half.
+- **Responsive Mobile Navigation** — full-screen overlay navigation menu with animated links, hamburger toggle, and body scroll lock.
+- **Light and Dark Theme Switcher** — CSS variable token system with theme toggle button in Navbar and persistent state in localStorage.
+- **Scroll To Top Controller** — router listener component to guarantee top-of-page positioning on route transitions.
+- **Privacy Policy & SEO Infrastructure** — added dedicated GDPR privacy policy route, `robots.txt`, dynamic metadata with `react-helmet-async`, and custom 404 page.
+
+### Changed
+- Featured projects on Home updated to include NicolinesArt client e-commerce platform.
+- Simplified experience dates in About timeline to clean year-based format.
+- Replaced developer-facing contact error message with direct email fallback.
+
+---
+
 ## [0.3.0] — 2026-08-16
 
 ### Added
